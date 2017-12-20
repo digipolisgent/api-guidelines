@@ -211,7 +211,7 @@ Services that do so MUST make this clear in their documentation and clients MUST
 Clients MUST NOT rely on the order in which data appears in JSON service responses.
 For example, clients SHOULD be resilient to the reordering of fields within a JSON object.
 When supported by the service, clients MAY request that data be returned in a specific order.
-For example, services MAY support the use of the _$orderBy_ querystring parameter to specify the order of elements within a JSON array.
+For example, services MAY support the use of the _orderBy_ querystring parameter to specify the order of elements within a JSON array.
 Services MAY also explicitly specify the ordering of some elements as part of the service contract.
 For example, a service MAY always return a JSON object's "type" information as the first field in an object to simplify response parsing on the client.
 Clients MAY rely on ordering behavior explicitly identified by the service.
@@ -628,7 +628,7 @@ Services used by interactive Web clients where performance is critical SHOULD av
   - If eliminating preflight is critical, then a service MAY support alternative mechanisms for data transfer, but the RECOMMENDED approach MUST also be supported.
 
 In addition, when appropriate services MAY support the JSONP pattern for simple, GET-only cross-domain access.
-In JSONP, services take a parameter indicating the format (_$format=json_) and a parameter indicating a callback (_$callback=someFunc_), and return a text/javascript document containing the JSON response wrapped in a function call with the indicated name.
+In JSONP, services take a parameter indicating the format (_format=json_) and a parameter indicating a callback (_callback=someFunc_), and return a text/javascript document containing the JSON response wrapped in a function call with the indicated name.
 More on JSONP at Wikipedia: [JSONP](https://en.wikipedia.org/wiki/JSONP).
 
 ## 9 Collections
@@ -731,9 +731,9 @@ PUT https://api.contoso.com/v1.0/people/123
 
 ### 9.6 Sorting collections
 The results of a collection query MAY be sorted based on property values.
-The property is determined by the value of the _$orderBy_ query parameter.
+The property is determined by the value of the _orderBy_ query parameter.
 
-The value of the _$orderBy_ parameter contains a comma-separated list of expressions used to sort the items.
+The value of the _orderBy_ parameter contains a comma-separated list of expressions used to sort the items.
 A special case of such an expression is a property path terminating on a primitive property.
 
 The expression MAY include the suffix "asc" for ascending or "desc" for descending, separated from the property name by one or more spaces.
@@ -747,7 +747,7 @@ The sort order is the inherent order for the type of the property.
 For example:
 
 ```http
-GET https://api.contoso.com/v1.0/people?$orderBy=name
+GET https://api.contoso.com/v1.0/people?orderBy=name
 ```
 
 Will return all people sorted by name in ascending order.
@@ -755,7 +755,7 @@ Will return all people sorted by name in ascending order.
 For example:
 
 ```http
-GET https://api.contoso.com/v1.0/people?$orderBy=name desc
+GET https://api.contoso.com/v1.0/people?orderBy=name desc
 ```
 
 Will return all people sorted by name in descending order.
@@ -765,7 +765,7 @@ Sub-sorts can be specified by a comma-separated list of property names with OPTI
 For example:
 
 ```http
-GET https://api.contoso.com/v1.0/people?$orderBy=name desc,hireDate
+GET https://api.contoso.com/v1.0/people?orderBy=name desc,hireDate
 ```
 
 Will return all people sorted by name in descending order and a secondary sort order of hireDate in ascending order.
@@ -773,7 +773,7 @@ Will return all people sorted by name in descending order and a secondary sort o
 Sorting MUST compose with filtering such that:
 
 ```http
-GET https://api.contoso.com/v1.0/people?$filter=name eq 'david'&$orderBy=hireDate
+GET https://api.contoso.com/v1.0/people?filter=name eq 'david'&orderBy=hireDate
 ```
 
 Will return all people whose name is David sorted in ascending order by hireDate.
@@ -781,23 +781,23 @@ Will return all people whose name is David sorted in ascending order by hireDate
 #### 9.6.1 Interpreting a sorting expression
 Sorting parameters MUST be consistent across pages, as both client and server-side paging is fully compatible with sorting.
 
-If a service does not support sorting by a property named in a _$orderBy_ expression, the service MUST respond with an error message as defined in the Responding to Unsupported Requests section.
+If a service does not support sorting by a property named in a _orderBy_ expression, the service MUST respond with an error message as defined in the Responding to Unsupported Requests section.
 
 ### 9.7 Filtering
-The _$filter_ querystring parameter allows clients to filter a collection of resources that are addressed by a request URL.
-The expression specified with _$filter_ is evaluated for each resource in the collection, and only items where the expression evaluates to true are included in the response.
+The _filter_ querystring parameter allows clients to filter a collection of resources that are addressed by a request URL.
+The expression specified with _filter_ is evaluated for each resource in the collection, and only items where the expression evaluates to true are included in the response.
 Resources for which the expression evaluates to false or to null, or which reference properties that are unavailable due to permissions, are omitted from the response.
 
-Example: return all Products whose Price is less than $10.00
+Example: return all Products whose Price is less than 10.00
 
 ```http
-GET https://api.contoso.com/v1.0/products?$filter=price lt 10.00
+GET https://api.contoso.com/v1.0/products?filter=price lt 10.00
 ```
 
-The value of the _$filter_ option is a Boolean expression.
+The value of the _filter_ option is a Boolean expression.
 
 #### 9.7.1 Filter operations
-Services that support _$filter_ SHOULD support the following minimal set of operations.
+Services that support _filter_ SHOULD support the following minimal set of operations.
 
 Operator             | Description           | Example
 -------------------- | --------------------- | -----------------------------------------------------
@@ -821,35 +821,35 @@ The following examples illustrate the use and semantics of each of the logical o
 Example: all products with a name equal to 'Milk'
 
 ```http
-GET https://api.contoso.com/v1.0/products?$filter=name eq 'Milk'
+GET https://api.contoso.com/v1.0/products?filter=name eq 'Milk'
 ```
 
 Example: all products with a name not equal to 'Milk'
 
 ```http
-GET https://api.contoso.com/v1.0/products?$filter=name ne 'Milk'
+GET https://api.contoso.com/v1.0/products?filter=name ne 'Milk'
 ```
 
 Example: all products with the name 'Milk' that also have a price less than 2.55:
 
 ```http
-GET https://api.contoso.com/v1.0/products?$filter=name eq 'Milk' and price lt 2.55
+GET https://api.contoso.com/v1.0/products?filter=name eq 'Milk' and price lt 2.55
 ```
 
 Example: all products that either have the name 'Milk' or have a price less than 2.55:
 
 ```http
-GET https://api.contoso.com/v1.0/products?$filter=name eq 'Milk' or price lt 2.55
+GET https://api.contoso.com/v1.0/products?filter=name eq 'Milk' or price lt 2.55
 ```
 
 Example 54: all products that have the name 'Milk' or 'Eggs' and have a price less than 2.55:
 
 ```http
-GET https://api.contoso.com/v1.0/products?$filter=(name eq 'Milk' or name eq 'Eggs') and price lt 2.55
+GET https://api.contoso.com/v1.0/products?filter=(name eq 'Milk' or name eq 'Eggs') and price lt 2.55
 ```
 
 #### 9.7.3 Operator precedence
-Services MUST use the following operator precedence for supported operators when evaluating _$filter_ expressions.
+Services MUST use the following operator precedence for supported operators when evaluating _filter_ expressions.
 Operators are listed by category in order of precedence from highest to lowest.
 Operators in the same category have equal precedence:
 
@@ -899,16 +899,16 @@ Content-Type: application/json
 ```
 
 #### 9.8.2 Client-driven paging
-Clients MAY use _$top_ and _$skip_ query parameters to specify a number of results to return and an offset.
+Clients MAY use _top_ and _skip_ query parameters to specify a number of results to return and an offset.
 The server SHOULD honor the values specified by the client; however, clients MUST be prepared to handle responses that contain a different page size or contain a continuation token.
 
-Note: If the server can't honor _$top_ and/or _$skip_, the server MUST return an error to the client informing about it instead of just ignoring the query options.
+Note: If the server can't honor _top_ and/or _skip_, the server MUST return an error to the client informing about it instead of just ignoring the query options.
 This will avoid the risk of the client making assumptions about the data returned.
 
 Example:
 
 ```http
-GET http://api.contoso.com/v1.0/people?$top=5&$skip=2 HTTP/1.1
+GET http://api.contoso.com/v1.0/people?top=5&skip=2 HTTP/1.1
 Accept: application/json
 
 HTTP/1.1 200 OK
@@ -931,13 +931,13 @@ The server SHOULD always encode the record ID of the last read record, helping t
 **Combining client- and server-driven paging:** Note that client-driven paging does not preclude server-driven paging.
 If the page size requested by the client is larger than the default page size supported by the server, the expected response would be the number of results specified by the client, paginated as specified by the server paging settings.
 
-**Page Size:** Clients MAY request server-driven paging with a specific page size by specifying a _$maxpagesize_ preference.
+**Page Size:** Clients MAY request server-driven paging with a specific page size by specifying a _maxpagesize_ preference.
 The server SHOULD honor this preference if the specified page size is smaller than the server's default page size.
 
 **Paginating embedded collections:** It is possible for both client-driven paging and server-driven paging to be applied to embedded collections.
 If a server paginates an embedded collection, it MUST include additional continuation tokens as appropriate.
 
-**Recordset count:** Developers who want to know the full number of records across all pages, MAY include the query parameter _$count=true_ to tell the server to include the count of items in the response.
+**Recordset count:** Developers who want to know the full number of records across all pages, MAY include the query parameter _count=true_ to tell the server to include the count of items in the response.
 
 ### 9.9 Compound collection operations
 Filtering, Sorting and Pagination operations MAY all be performed against a given collection.
@@ -975,11 +975,11 @@ Removed entities are represented using only their "id" and an "@removed" node.
 The presence of an "@removed" node MUST represent the removal of the entry from the set.
 
 ### 10.3 Obtaining a delta link
-A delta link is obtained by querying a collection or entity and appending a $delta query string parameter.
+A delta link is obtained by querying a collection or entity and appending a delta query string parameter.
 For example:
 
 ```http
-GET https://api.contoso.com/v1.0/people?$delta
+GET https://api.contoso.com/v1.0/people?delta
 HTTP/1.1
 Accept: application/json
 
@@ -1733,7 +1733,7 @@ For a firehose subscription, a concrete example of this may look like:
   "value": [
     {
       "subscriptionId": "32b8cbd6174ab18b",
-      "resource": "https://api.contoso.com/v1.0/users/user@contoso.com/files?$delta",
+      "resource": "https://api.contoso.com/v1.0/users/user@contoso.com/files?delta",
       "userId" : "<User GUID>",
       "tenantId" : "<Tenant Id>"
     }
@@ -1750,7 +1750,7 @@ For a per-user subscription, a concrete example of this may look like:
       "subscriptionId": "32b8cbd6174ab183",
       "clientState": "clientOriginatedOpaqueToken",
       "expirationDateTime": "2016-02-04T11:23Z",
-      "resource": "https://api.contoso.com/v1.0/users/user@contoso.com/files/$delta",
+      "resource": "https://api.contoso.com/v1.0/users/user@contoso.com/files/delta",
       "userId" : "<User GUID>",
       "tenantId" : "<Tenant Id>"
     },
@@ -1758,7 +1758,7 @@ For a per-user subscription, a concrete example of this may look like:
       "subscriptionId": "97b391179fa22",
       "clientState ": "clientOriginatedOpaqueToken",
       "expirationDateTime": "2016-02-04T11:23Z",
-      "resource": "https://api.contoso.com/v1.0/users/user@contoso.com/files/$delta",
+      "resource": "https://api.contoso.com/v1.0/users/user@contoso.com/files/delta",
       "userId" : "<User GUID>",
       "tenantId" : "<Tenant Id>"
     }
@@ -1794,7 +1794,7 @@ A client creates a subscription by issuing a POST request against the subscripti
 The subscription namespace is client-defined via the POST operation.
 
 ```
-https://api.contoso.com/apiVersion/$subscriptions
+https://api.contoso.com/apiVersion/subscriptions
 ```
 
 The POST request contains a single subscription object to be created.
@@ -1819,7 +1819,7 @@ The combination of properties scoped to the auth token, provides a uniqueness co
 Below is an example request using a User + Application principal to subscribe to notifications from a file:
 
 ```http
-POST https://api.contoso.com/files/v1.0/$subscriptions HTTP 1.1
+POST https://api.contoso.com/files/v1.0/subscriptions HTTP 1.1
 Authorization: Bearer {UserPrincipalBearerToken}
 
 {
@@ -1841,7 +1841,7 @@ The service SHOULD respond to such a message with a response format minimally li
 Below is an example using an Application-Only principal where the application is watching all files to which it's authorized:
 
 ```http
-POST https://api.contoso.com/files/v1.0/$subscriptions HTTP 1.1
+POST https://api.contoso.com/files/v1.0/subscriptions HTTP 1.1
 Authorization: Bearer {ApplicationPrincipalBearerToken}
 
 {
@@ -1871,7 +1871,7 @@ As with creation, subscriptions are individually managed.
 The following request changes the notification URL of an existing subscription:
 
 ```http
-PATCH https://api.contoso.com/files/v1.0/$subscriptions/{id} HTTP 1.1
+PATCH https://api.contoso.com/files/v1.0/subscriptions/{id} HTTP 1.1
 Authorization: Bearer {UserPrincipalBearerToken}
 
 {
@@ -1893,7 +1893,7 @@ Services MUST support deleting subscriptions.
 Existing subscriptions can be deleted by making a DELETE request against the subscription resource:
 
 ```http
-DELETE https://api.contoso.com/files/v1.0/$subscriptions/{id} HTTP 1.1
+DELETE https://api.contoso.com/files/v1.0/subscriptions/{id} HTTP 1.1
 Authorization: Bearer {UserPrincipalBearerToken}
 ```
 
@@ -1903,7 +1903,7 @@ As with update, the service MUST return `204 No Content` for a successful delete
 To get a list of active subscriptions, clients issue a GET request against the subscriptions resource using a User + Application or Application-Only bearer token:
 
 ```http
-GET https://api.contoso.com/files/v1.0/$subscriptions HTTP 1.1
+GET https://api.contoso.com/files/v1.0/subscriptions HTTP 1.1
 Authorization: Bearer {UserPrincipalBearerToken}
 ```
 
@@ -1967,11 +1967,11 @@ Similarly, some APIs will expose collections but require or otherwise limit filt
 If a service does not support any of the below API features, then an error response MUST be provided if the feature is requested by a caller.
 The features are:
 - Key Addressing in a collection, such as: `https://api.contoso.com/v1.0/people/user1@contoso.com`
-- Filtering a collection by a property value, such as: `https://api.contoso.com/v1.0/people?$filter=name eq 'david'`
-- Filtering a collection by range, such as: `http://api.contoso.com/v1.0/people?$filter=hireDate ge 2014-01-01 and hireDate le 2014-12-31`
-- Client-driven pagination via $top and $skip, such as: `http://api.contoso.com/v1.0/people?$top=5&$skip=2`
-- Sorting by $orderBy, such as: `https://api.contoso.com/v1.0/people?$orderBy=name desc`
-- Providing $delta tokens, such as: `https://api.contoso.com/v1.0/people?$delta`
+- Filtering a collection by a property value, such as: `https://api.contoso.com/v1.0/people?filter=name eq 'david'`
+- Filtering a collection by range, such as: `http://api.contoso.com/v1.0/people?filter=hireDate ge 2014-01-01 and hireDate le 2014-12-31`
+- Client-driven pagination via top and skip, such as: `http://api.contoso.com/v1.0/people?top=5&skip=2`
+- Sorting by orderBy, such as: `https://api.contoso.com/v1.0/people?orderBy=name desc`
+- Providing delta tokens, such as: `https://api.contoso.com/v1.0/people?delta`
 
 #### 15.2.1 Error response
 Services MUST provide an error response if a caller requests an unsupported feature found in the feature allow list.
@@ -1982,7 +1982,7 @@ Services SHOULD include enough detail in the response message for a developer to
 Example:
 
 ```http
-GET https://api.contoso.com/v1.0/people?$orderBy=name HTTP/1.1
+GET https://api.contoso.com/v1.0/people?orderBy=name HTTP/1.1
 Accept: application/json
 ```
 
