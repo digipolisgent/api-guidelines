@@ -3,7 +3,7 @@ The Digipolis REST API Guidelines is a Digipolis-wide initiative to develop cons
 
 To provide feedback, please follow the guidance in this document. Please note that these are just guidelines, not rules. Use your best judgment and feel free to propose changes to anything in this repository, including the contribution guidance.
 
-Please note that this project is released with a [Contributor Code of Conduct][code-of-conduct]. By participating in this project you agree to abide by its terms.
+By participating in this project you agree to abide by its terms.
 - [Creating issues](#creating-issues)
 - [Documentation styleguide](#documentation-styleguide)
 - [Commit messages](#commit-messages)
@@ -85,7 +85,6 @@ Pull requests serve as the primary mechanism by which contributions are proposed
 
 Be prepared to address feedback on your pull request and iterate if necessary.
 
-[code-of-conduct]: https://opensource.microsoft.com/codeofconduct/
 [new-issue]: https://github.com/Digipolis/api-guidelines/issues/new
 [issue-search]: https://github.com/Digipolis/api-guidelines/issues
 [white-house-api-guidelines]: https://github.com/WhiteHouse/api-standards/blob/master/README.md
