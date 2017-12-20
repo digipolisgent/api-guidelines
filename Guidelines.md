@@ -1,5 +1,5 @@
-# Microsoft REST API Guidelines
-## Microsoft REST API Guidelines Working Group
+# Digipolis REST API Guidelines
+## Digipolis REST API Guidelines Working Group
 
 Name | Name | Name |
 ---------------------------- | -------------------------------------- | ----------------------------------------
@@ -13,19 +13,19 @@ Document editors: John Gossman (C+E), Chris Mullins (ASG), Gareth Jones (ASG), R
 
 
 
-# Microsoft REST API Guidelines
+# Digipolis REST API Guidelines
 ## 1 Abstract
-The Microsoft REST API Guidelines, as a design principle, encourages application developers to have resources accessible to them via a RESTful HTTP interface.
-To provide the smoothest possible experience for developers on platforms following the Microsoft REST API Guidelines, REST APIs SHOULD follow consistent design guidelines to make using them easy and intuitive.
+The Digipolis REST API Guidelines, as a design principle, encourages application developers to have resources accessible to them via a RESTful HTTP interface.
+To provide the smoothest possible experience for developers on platforms following the Digipolis REST API Guidelines, REST APIs SHOULD follow consistent design guidelines to make using them easy and intuitive.
 
-This document establishes the guidelines Microsoft REST APIs SHOULD follow so RESTful interfaces are developed consistently.
+This document establishes the guidelines Digipolis REST APIs SHOULD follow so RESTful interfaces are developed consistently.
 
 ## 2 Table of contents
 <!-- TOC depthFrom:1 depthTo:3 withLinks:1 updateOnSave:1 orderedList:0 -->
 
-- [Microsoft REST API Guidelines 2.3](#microsoft-rest-api-guidelines-23)
-	- [Microsoft REST API Guidelines Working Group](#microsoft-rest-api-guidelines-working-group)
-- [Microsoft REST API Guidelines](#microsoft-rest-api-guidelines)
+- [Digipolis REST API Guidelines 2.3](#microsoft-rest-api-guidelines-23)
+	- [Digipolis REST API Guidelines Working Group](#microsoft-rest-api-guidelines-working-group)
+- [Digipolis REST API Guidelines](#microsoft-rest-api-guidelines)
 	- [1 Abstract](#1-abstract)
 	- [2 Table of contents](#2-table-of-contents)
 	- [3 Introduction](#3-introduction)
@@ -111,22 +111,22 @@ This document establishes the guidelines Microsoft REST APIs SHOULD follow so RE
 <!-- /TOC -->
 
 ## 3 Introduction
-Developers access most Microsoft Cloud Platform resources via HTTP interfaces.
+Developers access most Digipolis Cloud Platform resources via HTTP interfaces.
 Although each service typically provides language-specific frameworks to wrap their APIs, all of their operations eventually boil down to HTTP requests.
-Microsoft must support a wide range of clients and services and cannot rely on rich frameworks being available for every development environment.
-Thus a goal of these guidelines is to ensure Microsoft REST APIs can be easily and consistently consumed by any client with basic HTTP support.
+Digipolis must support a wide range of clients and services and cannot rely on rich frameworks being available for every development environment.
+Thus a goal of these guidelines is to ensure Digipolis REST APIs can be easily and consistently consumed by any client with basic HTTP support.
 
 To provide the smoothest possible experience for developers, it's important to have these APIs follow consistent design guidelines, thus making using them easy and intuitive.
-This document establishes the guidelines to be followed by Microsoft REST API developers for developing such APIs consistently.
+This document establishes the guidelines to be followed by Digipolis REST API developers for developing such APIs consistently.
 
 The benefits of consistency accrue in aggregate as well; consistency allows teams to leverage common code, patterns, documentation and design decisions.
 
 These guidelines aim to achieve the following:
-- Define consistent practices and patterns for all API endpoints across Microsoft.
+- Define consistent practices and patterns for all API endpoints across Digipolis.
 - Adhere as closely as possible to accepted REST/HTTP best practices in the industry at-large.*
-- Make accessing Microsoft Services via REST interfaces easy for all application developers.
+- Make accessing Digipolis Services via REST interfaces easy for all application developers.
 - Allow service developers to leverage the prior work of other services to implement, test and document REST endpoints defined consistently.
-- Allow for partners (e.g., non-Microsoft entities) to use these guidelines for their own REST endpoint design.
+- Allow for partners (e.g., non-Digipolis entities) to use these guidelines for their own REST endpoint design.
 
 *Note: The guidelines are designed to align with building services which comply with the REST architectural style, though they do not address or require building services that follow the REST constraints.
 The term "REST" is used throughout this document to mean services that are in the spirit of REST rather than adhering to REST by the book.*
@@ -145,7 +145,7 @@ If you are new to RESTful design, here are some good resources:
 
 ## 4 Interpreting the guidelines
 ### 4.1 Application of the guidelines
-These guidelines are applicable to any REST API exposed publicly by Microsoft or any partner service.
+These guidelines are applicable to any REST API exposed publicly by Digipolis or any partner service.
 Private or internal APIs SHOULD also try to follow these guidelines because internal services tend to eventually be exposed publicly.
  Consistency is valuable to not only external customers but also internal service consumers, and these guidelines offer best practices useful for any service.
 
@@ -168,7 +168,7 @@ This work is licensed under the Creative Commons Attribution 4.0 International L
 To view a copy of this license, visit http://creativecommons.org/licenses/by/4.0/ or send a letter to Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
 
 ## 5 Taxonomy
-As part of onboarding to Microsoft REST API Guidelines, services MUST comply with the taxonomy defined below.
+As part of onboarding to Digipolis REST API Guidelines, services MUST comply with the taxonomy defined below.
 
 ### 5.1 Errors
 Errors, or more specifically Service Errors, are defined as a client passing invalid data to the service and the service _correctly_ rejecting that data.
@@ -278,7 +278,7 @@ Operations MUST use the proper HTTP methods whenever possible, and operation ide
 HTTP methods are frequently referred to as the HTTP verbs.
 The terms are synonymous in this context, however the HTTP specification uses the term method.
 
-Below is a list of methods that Microsoft REST services SHOULD support.
+Below is a list of methods that Digipolis REST services SHOULD support.
 Not all resources will support all methods, but all resources using the methods below MUST conform to their usage.
 
 Method  | Description                                                                                                                | Is Idempotent
@@ -315,7 +315,7 @@ Services MAY also return the full metadata for the created item in the response.
 
 #### 7.4.2 PATCH
 PATCH has been standardized by IETF as the method to be used for updating an existing object incrementally (see [RFC 5789][rfc-5789]).
-Microsoft REST API Guidelines compliant APIs SHOULD support PATCH.
+Digipolis REST API Guidelines compliant APIs SHOULD support PATCH.
 
 #### 7.4.3 Creating resources via PATCH (UPSERT semantics)
 Services that allow callers to specify key values on create SHOULD support UPSERT semantics, and those that do MUST support creating resources using PATCH.
@@ -342,7 +342,7 @@ Where {help} is the URL to a documentation resource.
 For examples on use of OPTIONS, see [preflighting CORS cross-domain calls][cors-preflight].
 
 ### 7.5 Standard request headers
-The table of request headers below SHOULD be used by Microsoft REST API Guidelines services.
+The table of request headers below SHOULD be used by Digipolis REST API Guidelines services.
 Using these headers is not mandated, but if used they MUST be used consistently.
 
 All header values MUST follow the syntax rules set forth in the specification where the header field is defined.
@@ -437,7 +437,7 @@ Accept: application/json
 ```
 
 #### 7.10.2 Error condition responses
-For nonsuccess conditions, developers SHOULD be able to write one piece of code that handles errors consistently across different Microsoft REST API Guidelines services.
+For nonsuccess conditions, developers SHOULD be able to write one piece of code that handles errors consistently across different Digipolis REST API Guidelines services.
 This allows building of simple and reliable infrastructure to handle exceptions as a separate flow from successful responses.
 The following is based on the OData v4 JSON spec.
 However, it is very generic and does not require specific OData constructs.
@@ -581,7 +581,7 @@ Services SHOULD be able to be accessed from simple HTTP tools such as curl witho
 Service developer portals SHOULD provide the equivalent of "Get Developer Token" to facilitate experimentation and curl support.
 
 ## 8 CORS
-Services compliant with the Microsoft REST API Guidelines MUST support [CORS (Cross Origin Resource Sharing)][cors].
+Services compliant with the Digipolis REST API Guidelines MUST support [CORS (Cross Origin Resource Sharing)][cors].
 Services SHOULD support an allowed origin of CORS * and enforce authorization through valid OAuth tokens.
 Services SHOULD NOT support user credentials with origin validation.
 There MAY be exceptions for special cases.
@@ -963,7 +963,7 @@ The key principles of the Delta Query are:
 - Re-evaluate the query and compare it to original set of results; every entry uniquely in the current set MUST be returned as an Add operation, and every entry uniquely in the original set MUST be returned as a "remove" operation.
 - Each entity that previously did not match the criteria but matches it now MUST be returned as an "add"; conversely, each entity that previously matched the query but no longer does MUST be returned as a "@removed" entry.
 - Entities that have changed MUST be included in the set using their standard representation.
-- Services MAY add additional metadata to the "@removed" node, such as a reason for removal, or a "removed at" timestamp. We recommend teams coordinate with the Microsoft REST API Guidelines Working Group on extensions to help maintain consistency.
+- Services MAY add additional metadata to the "@removed" node, such as a reason for removal, or a "removed at" timestamp. We recommend teams coordinate with the Digipolis REST API Guidelines Working Group on extensions to help maintain consistency.
 
 The delta link MUST NOT encode any client top or skip value.
 
@@ -1122,7 +1122,7 @@ O        | RealNumber      | "OLE Date"; integral part is the number of days sin
 T        | SignedInteger   | "Ticks"; number of ticks (100-nanosecond intervals) since midnight January 1, 1601. *See note below.*                                             | [MSDN][ticks-time]
 U        | SignedInteger   | "UNIX"; number of seconds since midnight, January 1, 1970.                                                                                        | [MSDN][unix-time]
 W        | SignedInteger   | "Windows"; number of milliseconds since midnight January 1, 1601. *See note below.*                                                               | [MSDN][windows-time]
-X        | RealNumber      | "Excel"; as for `O` but the year 1900 is incorrectly treated as a leap year, and day 0 is "January 0 (zero)."                                     | [Microsoft Support][excel-time]
+X        | RealNumber      | "Excel"; as for `O` but the year 1900 is incorrectly treated as a leap year, and day 0 is "January 0 (zero)."                                     | [Digipolis Support][excel-time]
 
 **Important note for `C` and `W` kinds:** The native CLR and Windows times are represented by 100-nanosecond "tick" values.
 To interoperate with ECMAScript clients that have limited precision, _these values MUST be converted to and from milliseconds_ when (de)serialized as a `DateLiteral`.
@@ -1180,7 +1180,7 @@ Leaving out the value for [n] means an unbounded number of repetitions.
 For example, to repeat the interval of "P1Y2M10DT2H30M" five times starting at "2008-03-01T13:00:00Z," use "R5/2008-03-01T13:00:00Z/P1Y2M10DT2H30M."
 
 ## 12 Versioning
-**All APIs compliant with the Microsoft REST API Guidelines MUST support explicit versioning.** It's critical that clients can count on services to be stable over time, and it's critical that services can add features and make changes.
+**All APIs compliant with the Digipolis REST API Guidelines MUST support explicit versioning.** It's critical that clients can count on services to be stable over time, and it's critical that services can add features and make changes.
 
 ### 12.1 Versioning formats
 Services are versioned using a Major.Minor versioning scheme.
@@ -1192,11 +1192,11 @@ Two options for specifying the version of a REST API request are supported:
 Guidance for choosing between the two options is as follows:
 
 1. Services co-located behind a DNS endpoint MUST use the same versioning mechanism.
-2. In this scenario, a consistent user experience across the endpoint is paramount. The Microsoft REST API Guidelines Working Group recommends that new top-level DNS endpoints are not created without explicit conversations with your organization's leadership team.
+2. In this scenario, a consistent user experience across the endpoint is paramount. The Digipolis REST API Guidelines Working Group recommends that new top-level DNS endpoints are not created without explicit conversations with your organization's leadership team.
 3. Services that guarantee the stability of their REST API's URL paths, even through future versions of the API, MAY adopt the query string parameter mechanism. This means the naming and structure of the relationships described in the API cannot evolve after the API ships, even across versions with breaking changes.
 4. Services that cannot ensure URL path stability across future versions MUST embed the version in the URL path.
 
-Certain bedrock services such as Microsoft's Azure Active Directory may be exposed behind multiple endpoints.
+Certain bedrock services such as Digipolis's Azure Active Directory may be exposed behind multiple endpoints.
 Such services MUST support the versioning mechanisms of each endpoint, even if that means supporting multiple versioning mechanisms.
 
 #### 12.1.1 Group versioning
@@ -1811,7 +1811,7 @@ If the subscription was successfully created, the service MUST respond with the 
 Property Name      | Required | Notes
 ------------------ | -------- | -------------------------------------------------------------------------------------------
 id                 | Yes      | Unique ID of the new subscription that can be used later to update/delete the subscription.
-expirationDateTime | No       | Uses existing Microsoft REST API Guidelines defined time formats.
+expirationDateTime | No       | Uses existing Digipolis REST API Guidelines defined time formats.
 
 Creation of subscriptions SHOULD be idempotent.
 The combination of properties scoped to the auth token, provides a uniqueness constraint.
@@ -1976,7 +1976,7 @@ The features are:
 #### 15.2.1 Error response
 Services MUST provide an error response if a caller requests an unsupported feature found in the feature allow list.
 The error response MUST be an HTTP status code from the 4xx series, indicating that the request cannot be fulfilled.
-Unless a more specific error status is appropriate for the given request, services SHOULD return "400 Bad Request" and an error payload conforming to the error response guidance provided in the Microsoft REST API Guidelines.
+Unless a more specific error status is appropriate for the given request, services SHOULD return "400 Bad Request" and an error payload conforming to the error response guidance provided in the Digipolis REST API Guidelines.
 Services SHOULD include enough detail in the response message for a developer to determine exactly what portion of the request is not supported.
 
 Example:
