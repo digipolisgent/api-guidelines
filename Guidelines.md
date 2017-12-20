@@ -228,7 +228,7 @@ This facilitates discovery and eases adoption on platforms without a well-suppor
 An example of a well-structured URL is:
 
 ```
-https://api.contoso.com/v1.0/people/jdoe@contoso.com/inbox
+https://api.contoso.com/v1/people/jdoe@contoso.com/inbox
 ```
 
 An example URL that is not friendly is:
@@ -242,7 +242,7 @@ Services MAY use URLs as values.
 For example, the following is acceptable:
 
 ```
-https://api.contoso.com/v1.0/items?url=https://resources.contoso.com/shoes/fancy
+https://api.contoso.com/v1/items?url=https://resources.contoso.com/shoes/fancy
 ```
 
 ### 7.2 URL length
@@ -270,7 +270,7 @@ The stable identifier is not required to be a GUID.
 An example of a URL containing a canonical identifier is:
 
 ```
-https://api.contoso.com/v1.0/people/7011042402/inbox
+https://api.contoso.com/v1/people/7011042402/inbox
 ```
 
 ### 7.4 Supported methods
@@ -432,7 +432,7 @@ Accept Header    | Response type                      | Notes
 application/json | Payload SHOULD be returned as JSON | Also accept text/javascript for JSONP cases
 
 ```http
-GET https://api.contoso.com/v1.0/products/user
+GET https://api.contoso.com/v1/products/user
 Accept: application/json
 ```
 
@@ -643,7 +643,7 @@ Collections are located directly under the service root when they are top level,
 For example:
 
 ```http
-GET https://api.contoso.com/v1.0/people
+GET https://api.contoso.com/v1/people
 ```
 
 Whenever possible, services MUST support the "/" pattern.
@@ -663,7 +663,7 @@ Collection items MAY contain other collections.
 For example, a user collection MAY contain user resources that have multiple addresses:
 
 ```http
-GET https://api.contoso.com/v1.0/people/123/addresses
+GET https://api.contoso.com/v1/people/123/addresses
 ```
 
 ```json
@@ -703,27 +703,27 @@ This is often the case for insert operations on items with a server-side generat
 For example, the following request:
 
 ```http
-POST https://api.contoso.com/v1.0/people
+POST https://api.contoso.com/v1/people
 ```
 
 Would lead to a response indicating the location of the new collection item:
 
 ```http
 201 Created
-Location: https://api.contoso.com/v1.0/people/123
+Location: https://api.contoso.com/v1/people/123
 ```
 
 And once executed again, would likely lead to another resource:
 
 ```http
 201 Created
-Location: https://api.contoso.com/v1.0/people/124
+Location: https://api.contoso.com/v1/people/124
 ```
 
 While a PUT request would require the indication of the collection item with the corresponding key instead:
 
 ```http
-PUT https://api.contoso.com/v1.0/people/123
+PUT https://api.contoso.com/v1/people/123
 ```
 
 ### 9.6 Sorting collections
@@ -744,7 +744,7 @@ The sort order is the inherent order for the type of the property.
 For example:
 
 ```http
-GET https://api.contoso.com/v1.0/people?orderBy=name
+GET https://api.contoso.com/v1/people?orderBy=name
 ```
 
 Will return all people sorted by name in ascending order.
@@ -752,7 +752,7 @@ Will return all people sorted by name in ascending order.
 For example:
 
 ```http
-GET https://api.contoso.com/v1.0/people?orderBy=name desc
+GET https://api.contoso.com/v1/people?orderBy=name desc
 ```
 
 Will return all people sorted by name in descending order.
@@ -762,7 +762,7 @@ Sub-sorts can be specified by a comma-separated list of property names with OPTI
 For example:
 
 ```http
-GET https://api.contoso.com/v1.0/people?orderBy=name desc,hireDate
+GET https://api.contoso.com/v1/people?orderBy=name desc,hireDate
 ```
 
 Will return all people sorted by name in descending order and a secondary sort order of hireDate in ascending order.
@@ -770,7 +770,7 @@ Will return all people sorted by name in descending order and a secondary sort o
 Sorting MUST compose with filtering such that:
 
 ```http
-GET https://api.contoso.com/v1.0/people?filter=name eq 'david'&orderBy=hireDate
+GET https://api.contoso.com/v1/people?filter=name eq 'david'&orderBy=hireDate
 ```
 
 Will return all people whose name is David sorted in ascending order by hireDate.
@@ -788,7 +788,7 @@ Resources for which the expression evaluates to false or to null, or which refer
 Example: return all Products whose Price is less than 10.00
 
 ```http
-GET https://api.contoso.com/v1.0/products?filter=price lt 10.00
+GET https://api.contoso.com/v1/products?filter=price lt 10.00
 ```
 
 The value of the _filter_ option is a Boolean expression.
@@ -818,31 +818,31 @@ The following examples illustrate the use and semantics of each of the logical o
 Example: all products with a name equal to 'Milk'
 
 ```http
-GET https://api.contoso.com/v1.0/products?filter=name eq 'Milk'
+GET https://api.contoso.com/v1/products?filter=name eq 'Milk'
 ```
 
 Example: all products with a name not equal to 'Milk'
 
 ```http
-GET https://api.contoso.com/v1.0/products?filter=name ne 'Milk'
+GET https://api.contoso.com/v1/products?filter=name ne 'Milk'
 ```
 
 Example: all products with the name 'Milk' that also have a price less than 2.55:
 
 ```http
-GET https://api.contoso.com/v1.0/products?filter=name eq 'Milk' and price lt 2.55
+GET https://api.contoso.com/v1/products?filter=name eq 'Milk' and price lt 2.55
 ```
 
 Example: all products that either have the name 'Milk' or have a price less than 2.55:
 
 ```http
-GET https://api.contoso.com/v1.0/products?filter=name eq 'Milk' or price lt 2.55
+GET https://api.contoso.com/v1/products?filter=name eq 'Milk' or price lt 2.55
 ```
 
 Example 54: all products that have the name 'Milk' or 'Eggs' and have a price less than 2.55:
 
 ```http
-GET https://api.contoso.com/v1.0/products?filter=(name eq 'Milk' or name eq 'Eggs') and price lt 2.55
+GET https://api.contoso.com/v1/products?filter=(name eq 'Milk' or name eq 'Eggs') and price lt 2.55
 ```
 
 #### 9.7.3 Operator precedence
@@ -882,7 +882,7 @@ Clients MUST treat the continuation URL as opaque, which means that query option
 Example:
 
 ```http
-GET http://api.contoso.com/v1.0/people HTTP/1.1
+GET http://api.contoso.com/v1/people HTTP/1.1
 Accept: application/json
 
 HTTP/1.1 200 OK
@@ -905,7 +905,7 @@ This will avoid the risk of the client making assumptions about the data returne
 Example:
 
 ```http
-GET http://api.contoso.com/v1.0/people?top=5&skip=2 HTTP/1.1
+GET http://api.contoso.com/v1/people?top=5&skip=2 HTTP/1.1
 Accept: application/json
 
 HTTP/1.1 200 OK
@@ -976,7 +976,7 @@ A delta link is obtained by querying a collection or entity and appending a delt
 For example:
 
 ```http
-GET https://api.contoso.com/v1.0/people?delta
+GET https://api.contoso.com/v1/people?delta
 HTTP/1.1
 Accept: application/json
 
@@ -1183,7 +1183,7 @@ For example, to repeat the interval of "P1Y2M10DT2H30M" five times starting at "
 Services are versioned using a Major.Minor versioning scheme.
 Services MAY opt for a "Major" only version scheme in which case the ".0" is implied and all other rules in this section apply.
 Two options for specifying the version of a REST API request are supported:
-- Embedded in the path of the request URL, at the end of the service root: `https://api.contoso.com/v1.0/products/users`
+- Embedded in the path of the request URL, at the end of the service root: `https://api.contoso.com/v1/products/users`
 - As a query string parameter of the URL: `https://api.contoso.com/products/users?api-version=1.0`
 
 Guidance for choosing between the two options is as follows:
@@ -1290,7 +1290,7 @@ While most operations are likely to be POST semantics, In addition to POST seman
 For example, a user that wants to create a database named "db1" could call:
 
 ```http
-PUT https://api.contoso.com/v1.0/databases/db1
+PUT https://api.contoso.com/v1/databases/db1
 ```
 
 In this scenario the databases segment is processing the PUT operation.
@@ -1317,14 +1317,14 @@ In other words, APIs must adopt and stick with a LRO pattern and not change patt
 Services MAY enable PUT requests for entity creation.
 
 ```http
-PUT https://api.contoso.com/v1.0/databases/db1
+PUT https://api.contoso.com/v1/databases/db1
 ```
 
 In this scenario the _databases_ segment is processing the PUT operation.
 
 ```http
 HTTP/1.1 202 Accepted
-Operation-Location: https://api.contoso.com/v1.0/operations/123
+Operation-Location: https://api.contoso.com/v1/operations/123
 ```
 
 For services that need to return a 201 Created here, use the hybrid flow described below.
@@ -1336,7 +1336,7 @@ The 201 Created case should return the body of the target resource.
 Services MAY enable POST requests for entity creation.
 
 ```http
-POST https://api.contoso.com/v1.0/databases/
+POST https://api.contoso.com/v1/databases/
 
 {
   "fileName": "someFile.db",
@@ -1346,7 +1346,7 @@ POST https://api.contoso.com/v1.0/databases/
 
 ```http
 HTTP/1.1 202 Accepted
-Operation-Location: https://api.contoso.com/v1.0/operations/123
+Operation-Location: https://api.contoso.com/v1/operations/123
 ```
 
 #### 13.2.3 POST, hybrid model
@@ -1356,7 +1356,7 @@ In order to use this pattern, the response MUST include a representation of the 
 For example:
 
 ```http
-POST https://api.contoso.com/v1.0/databases/ HTTP/1.1
+POST https://api.contoso.com/v1/databases/ HTTP/1.1
 Host: api.contoso.com
 Content-Type: application/json
 Accept: application/json
@@ -1372,8 +1372,8 @@ In this case the status property in the response payload also indicates the oper
 
 ```http
 HTTP/1.1 201 Created
-Location: https://api.contoso.com/v1.0/databases/db1
-Operation-Location: https://api.contoso.com/v1.0/operations/123
+Location: https://api.contoso.com/v1/databases/db1
+Operation-Location: https://api.contoso.com/v1/operations/123
 
 {
   "databaseName": "db1",
@@ -1466,7 +1466,7 @@ For operations that result in, or manipulate, a resource the service MUST includ
   "createdDateTime": "2015-06-19T12-01-03.45Z",
   "lastActionDateTime": "2015-06-19T12-06-03.0024Z",
   "status": "succeeded",
-  "resourceLocation": "https://api.contoso.com/v1.0/databases/db1"
+  "resourceLocation": "https://api.contoso.com/v1/databases/db1"
 }
 ```
 
@@ -1483,7 +1483,7 @@ Services MAY choose to delete tombstones after a service defined period of time.
 Client invokes the restart action:
 
 ```http
-POST https://api.contoso.com/v1.0/databases HTTP/1.1
+POST https://api.contoso.com/v1/databases HTTP/1.1
 Accept: application/json
 
 {
@@ -1496,13 +1496,13 @@ The server response indicates the request has been created.
 
 ```http
 HTTP/1.1 202 Accepted
-Operation-Location: https://api.contoso.com/v1.0/operations/123
+Operation-Location: https://api.contoso.com/v1/operations/123
 ```
 
 Client waits for a period of time then invokes another request to try to get the operation status.
 
 ```http
-GET https://api.contoso.com/v1.0/operations/123
+GET https://api.contoso.com/v1/operations/123
 Accept: application/json
 ```
 
@@ -1521,7 +1521,7 @@ Retry-After: 30
 Client waits the recommended 30 seconds and then invokes another request to get the results of the operation.
 
 ```http
-GET https://api.contoso.com/v1.0/operations/123
+GET https://api.contoso.com/v1/operations/123
 Accept: application/json
 ```
 
@@ -1535,7 +1535,7 @@ Content-Type: application/json
   "createdDateTime": "2015-06-19T12-01-03.45Z",
   "lastActionDateTime": "2015-06-19T12-06-03.0024Z",
   "status": "succeeded",
-  "resourceLocation": "https://api.contoso.com/v1.0/databases/db1"
+  "resourceLocation": "https://api.contoso.com/v1/databases/db1"
 }
 ```
 
@@ -1550,7 +1550,7 @@ Client invokes the backup action.
 The client already has a push notification subscription setup for db1.
 
 ```http
-POST https://api.contoso.com/v1.0/databases/db1?backup HTTP/1.1
+POST https://api.contoso.com/v1/databases/db1?backup HTTP/1.1
 Accept: application/json
 ```
 
@@ -1558,7 +1558,7 @@ The server response indicates the request has been accepted.
 
 ```http
 HTTP/1.1 202 Accepted
-Operation-Location: https://api.contoso.com/v1.0/operations/123
+Operation-Location: https://api.contoso.com/v1/operations/123
 ```
 
 The caller ignores all the headers in the return.
@@ -1574,7 +1574,7 @@ Content-Type: application/json
     {
       "subscriptionId": "1234-5678-1111-2222",
       "context": "subscription context that was specified at setup",
-      "resourceUrl": "https://api.contoso.com/v1.0/databases/db1",
+      "resourceUrl": "https://api.contoso.com/v1/databases/db1",
       "userId" : "contoso.com/user@contoso.com",
       "tenantId" : "contoso.com"
     }
@@ -1589,7 +1589,7 @@ The HTTP specification allows the Retry-After header to alternatively specify a 
 
 ```http
 HTTP/1.1 202 Accepted
-Operation-Location: http://api.contoso.com/v1.0/operations/123
+Operation-Location: http://api.contoso.com/v1/operations/123
 Retry-After: 60
 ```
 
@@ -1728,7 +1728,7 @@ For a firehose subscription, a concrete example of this may look like:
   "value": [
     {
       "subscriptionId": "32b8cbd6174ab18b",
-      "resource": "https://api.contoso.com/v1.0/users/user@contoso.com/files?delta",
+      "resource": "https://api.contoso.com/v1/users/user@contoso.com/files?delta",
       "userId" : "<User GUID>",
       "tenantId" : "<Tenant Id>"
     }
@@ -1745,7 +1745,7 @@ For a per-user subscription, a concrete example of this may look like:
       "subscriptionId": "32b8cbd6174ab183",
       "clientState": "clientOriginatedOpaqueToken",
       "expirationDateTime": "2016-02-04T11:23Z",
-      "resource": "https://api.contoso.com/v1.0/users/user@contoso.com/files/delta",
+      "resource": "https://api.contoso.com/v1/users/user@contoso.com/files/delta",
       "userId" : "<User GUID>",
       "tenantId" : "<Tenant Id>"
     },
@@ -1753,7 +1753,7 @@ For a per-user subscription, a concrete example of this may look like:
       "subscriptionId": "97b391179fa22",
       "clientState ": "clientOriginatedOpaqueToken",
       "expirationDateTime": "2016-02-04T11:23Z",
-      "resource": "https://api.contoso.com/v1.0/users/user@contoso.com/files/delta",
+      "resource": "https://api.contoso.com/v1/users/user@contoso.com/files/delta",
       "userId" : "<User GUID>",
       "tenantId" : "<Tenant Id>"
     }
@@ -1814,11 +1814,11 @@ The combination of properties scoped to the auth token, provides a uniqueness co
 Below is an example request using a User + Application principal to subscribe to notifications from a file:
 
 ```http
-POST https://api.contoso.com/files/v1.0/subscriptions HTTP 1.1
+POST https://api.contoso.com/files/v1/subscriptions HTTP 1.1
 Authorization: Bearer {UserPrincipalBearerToken}
 
 {
-  "resource": "http://api.service.com/v1.0/files/file1.txt",
+  "resource": "http://api.service.com/v1/files/file1.txt",
   "notificationUrl": "https://contoso.com/myCallbacks",
   "clientState": "clientOriginatedOpaqueToken"
 }
@@ -1836,7 +1836,7 @@ The service SHOULD respond to such a message with a response format minimally li
 Below is an example using an Application-Only principal where the application is watching all files to which it's authorized:
 
 ```http
-POST https://api.contoso.com/files/v1.0/subscriptions HTTP 1.1
+POST https://api.contoso.com/files/v1/subscriptions HTTP 1.1
 Authorization: Bearer {ApplicationPrincipalBearerToken}
 
 {
@@ -1866,7 +1866,7 @@ As with creation, subscriptions are individually managed.
 The following request changes the notification URL of an existing subscription:
 
 ```http
-PATCH https://api.contoso.com/files/v1.0/subscriptions/{id} HTTP 1.1
+PATCH https://api.contoso.com/files/v1/subscriptions/{id} HTTP 1.1
 Authorization: Bearer {UserPrincipalBearerToken}
 
 {
@@ -1888,7 +1888,7 @@ Services MUST support deleting subscriptions.
 Existing subscriptions can be deleted by making a DELETE request against the subscription resource:
 
 ```http
-DELETE https://api.contoso.com/files/v1.0/subscriptions/{id} HTTP 1.1
+DELETE https://api.contoso.com/files/v1/subscriptions/{id} HTTP 1.1
 Authorization: Bearer {UserPrincipalBearerToken}
 ```
 
@@ -1898,7 +1898,7 @@ As with update, the service MUST return `204 No Content` for a successful delete
 To get a list of active subscriptions, clients issue a GET request against the subscriptions resource using a User + Application or Application-Only bearer token:
 
 ```http
-GET https://api.contoso.com/files/v1.0/subscriptions HTTP 1.1
+GET https://api.contoso.com/files/v1/subscriptions HTTP 1.1
 Authorization: Bearer {UserPrincipalBearerToken}
 ```
 
@@ -1909,7 +1909,7 @@ The service MUST return a format as below using a User + Application principal b
   "value": [
     {
       "id": "32b8cbd6174ab18b",
-      "resource": " http://api.contoso.com/v1.0/files/file1.txt",
+      "resource": " http://api.contoso.com/v1/files/file1.txt",
       "notificationUrl": "https://contoso.com/myCallbacks",
       "clientState": "clientOriginatedOpaqueToken",
       "expirationDateTime": "2016-02-04T11:23Z"
@@ -1961,12 +1961,12 @@ Similarly, some APIs will expose collections but require or otherwise limit filt
 ### 15.2 Feature allow list
 If a service does not support any of the below API features, then an error response MUST be provided if the feature is requested by a caller.
 The features are:
-- Key Addressing in a collection, such as: `https://api.contoso.com/v1.0/people/user1@contoso.com`
-- Filtering a collection by a property value, such as: `https://api.contoso.com/v1.0/people?filter=name eq 'david'`
-- Filtering a collection by range, such as: `http://api.contoso.com/v1.0/people?filter=hireDate ge 2014-01-01 and hireDate le 2014-12-31`
-- Client-driven pagination via top and skip, such as: `http://api.contoso.com/v1.0/people?top=5&skip=2`
-- Sorting by orderBy, such as: `https://api.contoso.com/v1.0/people?orderBy=name desc`
-- Providing delta tokens, such as: `https://api.contoso.com/v1.0/people?delta`
+- Key Addressing in a collection, such as: `https://api.contoso.com/v1/people/user1@contoso.com`
+- Filtering a collection by a property value, such as: `https://api.contoso.com/v1/people?filter=name eq 'david'`
+- Filtering a collection by range, such as: `http://api.contoso.com/v1/people?filter=hireDate ge 2014-01-01 and hireDate le 2014-12-31`
+- Client-driven pagination via top and skip, such as: `http://api.contoso.com/v1/people?top=5&skip=2`
+- Sorting by orderBy, such as: `https://api.contoso.com/v1/people?orderBy=name desc`
+- Providing delta tokens, such as: `https://api.contoso.com/v1/people?delta`
 
 #### 15.2.1 Error response
 Services MUST provide an error response if a caller requests an unsupported feature found in the feature allow list.
@@ -1977,7 +1977,7 @@ Services SHOULD include enough detail in the response message for a developer to
 Example:
 
 ```http
-GET https://api.contoso.com/v1.0/people?orderBy=name HTTP/1.1
+GET https://api.contoso.com/v1/people?orderBy=name HTTP/1.1
 Accept: application/json
 ```
 
