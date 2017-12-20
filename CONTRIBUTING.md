@@ -1,5 +1,5 @@
-# Contributing to the Microsoft REST API Guidelines
-The Microsoft REST API Guidelines is a Microsoft-wide initiative to develop consistent design guidelines for REST APIs. The initiative requires input and feedback from a variety of individuals both inside and outside of Microsoft.
+# Contributing to the Digipolis REST API Guidelines
+The Digipolis REST API Guidelines is a Digipolis-wide initiative to develop consistent design guidelines for REST APIs. The initiative requires input and feedback from a variety of individuals both inside and outside of Digipolis.
 
 To provide feedback, please follow the guidance in this document. Please note that these are just guidelines, not rules. Use your best judgment and feel free to propose changes to anything in this repository, including the contribution guidance.
 
@@ -12,12 +12,12 @@ Please note that this project is released with a [Contributor Code of Conduct][c
 ## Creating issues
 - You can [create an issue][new-issue], but before doing that please read the bullets below and include as many details as possible.
 - Perform a [cursory search][issue-search] to see if a similar issue has already been submitted.
-- Reference the version of the Microsoft REST API Guidelines you are using.
+- Reference the version of the Digipolis REST API Guidelines you are using.
 - Include the guidance you expected and other places you've seen that guidance, e.g. [White House Web API Standards][white-house-api-guidelines].
 - Include sample requests and responses whenever possible.
 
 ### Related repositories
-This is the repository for Microsoft REST API Guidelines documentation only. Please ensure that you are opening issues in the right repository.
+This is the repository for Digipolis REST API Guidelines documentation only. Please ensure that you are opening issues in the right repository.
 
 ## Recommended setup for contributing
 - Install [Atom][atom], [VS Code][vscode], or your favorite editor
@@ -86,8 +86,8 @@ Pull requests serve as the primary mechanism by which contributions are proposed
 Be prepared to address feedback on your pull request and iterate if necessary.
 
 [code-of-conduct]: https://opensource.microsoft.com/codeofconduct/
-[new-issue]: https://github.com/Microsoft/api-guidelines/issues/new
-[issue-search]: https://github.com/Microsoft/api-guidelines/issues
+[new-issue]: https://github.com/Digipolis/api-guidelines/issues/new
+[issue-search]: https://github.com/Digipolis/api-guidelines/issues
 [white-house-api-guidelines]: https://github.com/WhiteHouse/api-standards/blob/master/README.md
 [topic-branch]: http://www.git-scm.com/book/en/v2/Git-Branching-Branching-Workflows#Topic-Branches
 [gfm]: https://guides.github.com/features/mastering-markdown/#GitHub-flavored-markdown
