@@ -894,16 +894,16 @@ Content-Type: application/json
 ```
 
 #### 9.8.2 Client-driven paging
-Clients MAY use _top_ and _skip_ query parameters to specify a number of results to return and an offset.
+Clients MAY use _offset_ and _limit_ query parameters to specify a number of results to return and an offset.
 The server SHOULD honor the values specified by the client; however, clients MUST be prepared to handle responses that contain a different page size or contain a continuation token.
 
-Note: If the server can't honor _top_ and/or _skip_, the server MUST return an error to the client informing about it instead of just ignoring the query options.
+Note: If the server can't honor _offset_ and/or _limit_, the server MUST return an error to the client informing about it instead of just ignoring the query options.
 This will avoid the risk of the client making assumptions about the data returned.
 
 Example:
 
 ```http
-GET http://api.contoso.com/v1/people?top=5&skip=2 HTTP/1.1
+GET http://api.contoso.com/v1/people?limit=5&offset=2 HTTP/1.1
 Accept: application/json
 
 HTTP/1.1 200 OK
