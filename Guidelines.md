@@ -872,12 +872,7 @@ Client-driven paging enables clients to request only the number of resources tha
 Sorting and Filtering parameters MUST be consistent across pages, because both client- and server-side paging is fully compatible with both filtering and sorting.
 
 #### 9.8.1 Server-driven paging
-Paginated responses MUST indicate a partial result by including a continuation token in the response.
-The absence of a continuation token means that no additional pages are available.
-
-Clients MUST treat the continuation URL as opaque, which means that query options may not be changed while iterating over a set of partial results.
-
-Example:
+Paging should follow the [HAL JSON specification](http://stateless.co/hal_specification.html), by including a links element:
 
 ```http
 GET http://api.contoso.com/v1/people HTTP/1.1
@@ -887,9 +882,23 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-  ...,
-  "value": [...],
-  "@nextLink": "{opaqueUrl}"
+  "_links": {
+    "self": {
+      "href": "http://example.com/api/book/hal-cookbook"
+    },
+    "next": {
+      "href": "http://example.com/api/book/hal-case-study"
+    },
+    "prev": {
+      "href": "http://example.com/api/book/json-and-beyond"
+    },
+    "first": {
+      "href": "http://example.com/api/book/catalog"
+    },
+    "last": {
+      "href": "http://example.com/api/book/upcoming-books"
+    }
+  }
 }
 ```
 
