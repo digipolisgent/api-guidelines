@@ -219,7 +219,7 @@ Clients requesting OPTIONAL server functionality (such as optional headers) MUST
 
 ## 7 Consistency fundamentals
 ### 7.1 URL structure
-Humans SHOULD be able to easily read and construct URLs.
+Humans SHOULD be able to easily read and construct URLs. However these should not contain sensitive data (e.g. passwords, API keys). In case of doubt, check with our security officers.
 
 This facilitates discovery and eases adoption on platforms without a well-supported client library.
 
@@ -276,8 +276,8 @@ Operations MUST use the proper HTTP methods whenever possible, and operation ide
 HTTP methods are frequently referred to as the HTTP verbs.
 The terms are synonymous in this context, however the HTTP specification uses the term method.
 
-Below is a list of methods that Digipolis REST services SHOULD support.
-Not all resources will support all methods, but all resources using the methods below MUST conform to their usage.
+Below is a list of methods that Digipolis REST services CAN support.
+Not all resources will support all methods, but all resources using the methods below MUST conform to their usage. When a method is not supported, the resource should return a HTTP 405 Method not allowed.
 
 Method  | Description                                                                                                                | Is Idempotent
 ------- | -------------------------------------------------------------------------------------------------------------------------- | -------------
@@ -315,16 +315,13 @@ Services MAY also return the full metadata for the created item in the response.
 PATCH has been standardized by IETF as the method to be used for updating an existing object incrementally (see [RFC 5789][rfc-5789]).
 Digipolis REST API Guidelines compliant APIs SHOULD support PATCH.
 
-#### 7.4.3 Creating resources via PATCH (UPSERT semantics)
+#### 7.4.3 Creating resources via PATCH (UPDATE semantics)
 Services that allow callers to specify key values on create SHOULD support UPSERT semantics, and those that do MUST support creating resources using PATCH.
 Because PUT is defined as a complete replacement of the content, it is dangerous for clients to use PUT to modify data.
 Clients that do not understand (and hence ignore) properties on a resource are not likely to provide them on a PUT when trying to update a resource, hence such properties could be inadvertently removed.
 Services MAY optionally support PUT to update existing resources, but if they do they MUST use replacement semantics (that is, after the PUT, the resource's properties MUST match what was provided in the request, including deleting any server properties that were not provided).
 
-Under UPSERT semantics, a PATCH call to a nonexistent resource is handled by the server as a "create," and a PATCH call to an existing resource is handled as an "update." To ensure that an update request is not treated as a create or vice-versa, the client MAY specify precondition HTTP headers in the request.
-The service MUST NOT treat a PATCH request as an insert if it contains an If-Match header and MUST NOT treat a PATCH request as an update if it contains an If-None-Match header with a value of "*".
-
-If a service does not support UPSERT, then a PATCH call against a resource that does not exist MUST result in an HTTP "409 Conflict" error.
+A PATCH call against a resource that does not exist MUST result in an HTTP "409 Conflict" error.
 
 #### 7.4.4 Options and link headers
 OPTIONS allows a client to retrieve information about a resource, at a minimum by returning the Allow header denoting the valid methods for this resource.
@@ -349,7 +346,7 @@ Many HTTP headers are defined in [RFC7231][rfc-7231], however a complete list of
 Header                            | Type                                  | Description
 --------------------------------- | ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Authorization                     | String                                           | Authorization header for the request
-Date                              | Date                                             | Timestamp of the request, based on the client's clock, in [RFC 5322][rfc-5322-3-3] date and time format.  The server SHOULD NOT make any assumptions about the accuracy of the client's clock.  This header MAY be included in the request, but MUST be in this format when supplied.  Greenwich Mean Time (GMT) MUST be used as the time zone reference for this header when it is provided.  For example: `Wed, 24 Aug 2016 18:41:30 GMT`.  Note that GMT is exactly equal to UTC (Coordinated Universal Time) for this purpose.
+Date                              | Date                                             | Timestamp of the request, based on the client's clock, in [RFC 5322][rfc-5322-3-3] date and time format.  The server SHOULD NOT make any assumptions about the accuracy of the client's clock.  This header MAY be included in the request, but MUST be in this format when supplied. UTC MUST be used as the time zone reference for this header when it is provided.  For example: `2016-12-24T18:41:30Z`. 
 Accept                            | Content type                                     | The requested content type for the response such as: <ul><li>application/xml</li><li>text/xml</li><li>application/json</li><li>text/javascript (for JSONP)</li></ul>Per the HTTP guidelines, this is just a hint and responses MAY have a different content type, such as a blob fetch where a successful response will just be the blob stream as the payload.
 Accept-Encoding                   | Gzip, deflate                                    | REST endpoints SHOULD support GZIP and DEFLATE encoding, when applicable. For very large resources, services MAY ignore and return uncompressed data.
 Accept-Language                   | "en", "es", etc.                                 | Specifies the preferred language for the response. Services are not required to support this, but if a service supports localization it MUST do so through the Accept-Language header.
@@ -363,11 +360,14 @@ Services SHOULD return the following response headers, except where noted in the
 
 Response Header    | Required                                      | Description
 ------------------ | --------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Date               | All responses                                 | Timestamp the response was processed, based on the server's clock, in [RFC 5322][rfc-5322-3-3] date and time format.  This header MUST be included in the response.  Greenwich Mean Time (GMT) MUST be used as the time zone reference for this header.  For example: `Wed, 24 Aug 2016 18:41:30 GMT`. Note that GMT is exactly equal to UTC (Coordinated Universal Time) for this purpose.
+Date               | All responses                                 | Timestamp the response was processed, based on the server's clock, in [RFC 5322][rfc-5322-3-3] date and time format.  This header MUST be included in the response. UTC MUST be used as the time zone reference for this header.  For example: `2016-12-24T18:41:30Z`. 
 Content-Type       | All responses                                 | The content type
 Content-Encoding   | All responses                                 | GZIP or DEFLATE, as appropriate
 Preference-Applied | When specified in request                     | Whether a preference indicated in the Prefer request header was applied
 ETag               | When the requested resource has an entity tag | The ETag response-header field provides the current value of the entity tag for the requested variant. Used with If-Match, If-None-Match and If-Range to implement optimistic concurrency control.
+Content-Type: *content-type* | Preferred | To make sure the content of a given resources is interpreted correctly by the browser, the server should always send the Content-Type header with the correct Content-Type, and preferably the Content-Type header should include a charset.
+X-Content-Type-Options: sniff | Preferred | Make sure the browser does not try to detect a different Content-Type than what is actually sent (can lead to XSS).
+X-Frame-Options: deny | Preferred | Protect against drag’n drop clickjacking attacks in older browsers
 
 ### 7.7 Custom headers
 Custom headers MUST NOT be required for the basic operation of a given API.
@@ -574,6 +574,9 @@ Developers MUST be able to develop on a wide variety of platforms and languages,
 Services SHOULD be able to be accessed from simple HTTP tools such as curl without significant effort.
 
 Service developer portals SHOULD provide the equivalent of "Get Developer Token" to facilitate experimentation and curl support.
+
+### 7.13 Input validation
+TODO copy
 
 ## 8 CORS
 Services compliant with the Digipolis REST API Guidelines MUST support [CORS (Cross Origin Resource Sharing)][cors].
@@ -902,6 +905,8 @@ Content-Type: application/json
 }
 ```
 
+The server can decide on the maximum amount of data/records returned per call.
+
 #### 9.8.2 Client-driven paging
 Clients MAY use _offset_ and _limit_ query parameters to specify a number of results to return and an offset.
 The server SHOULD honor the values specified by the client; however, clients MUST be prepared to handle responses that contain a different page size or contain a continuation token.
@@ -952,92 +957,7 @@ When these operations are performed together, the evaluation order MUST be:
 3. **Pagination**. The materialized paginated view is presented over the filtered, sorted list. This applies to both server-driven pagination and client-driven pagination.
 
 ## 10 Delta queries
-Services MAY choose to support delta queries.
-
-### 10.1 Delta links
-Delta links are opaque, service-generated links that the client uses to retrieve subsequent changes to a result.
-
-At a conceptual level delta links are based on a defining query that describes the set of results for which changes are being tracked.
-The delta link encodes the collection of entities for which changes are being tracked, along with a starting point from which to track changes.
-
-If the query contains a filter, the response MUST include only changes to entities matching the specified criteria.
-The key principles of the Delta Query are:
-- Every item in the set MUST have a persistent identifier. That identifier SHOULD be represented as "id". This identifier is a service defined opaque string that MAY be used by the client to track object across calls.
-- The delta MUST contain an entry for each entity that newly matches the specified criteria, and MUST contain a "@removed" entry for each entity that no longer matches the criteria.
-- Re-evaluate the query and compare it to original set of results; every entry uniquely in the current set MUST be returned as an Add operation, and every entry uniquely in the original set MUST be returned as a "remove" operation.
-- Each entity that previously did not match the criteria but matches it now MUST be returned as an "add"; conversely, each entity that previously matched the query but no longer does MUST be returned as a "@removed" entry.
-- Entities that have changed MUST be included in the set using their standard representation.
-- Services MAY add additional metadata to the "@removed" node, such as a reason for removal, or a "removed at" timestamp. We recommend teams coordinate with the Digipolis REST API Guidelines Working Group on extensions to help maintain consistency.
-
-The delta link MUST NOT encode any client top or skip value.
-
-### 10.2 Entity representation
-Added and updated entities are represented in the entity set using their standard representation.
-From the perspective of the set, there is no difference between an added or updated entity.
-
-Removed entities are represented using only their "id" and an "@removed" node.
-The presence of an "@removed" node MUST represent the removal of the entry from the set.
-
-### 10.3 Obtaining a delta link
-A delta link is obtained by querying a collection or entity and appending a delta query string parameter.
-For example:
-
-```http
-GET https://api.contoso.com/v1/people?delta
-HTTP/1.1
-Accept: application/json
-
-HTTP/1.1 200 OK
-Content-Type: application/json
-
-{
-  "value":[
-    { "id": "1", "name": "Matt"},
-    { "id": "2", "name": "Mark"},
-    { "id": "3", "name": "John"},
-  ],
-  "@deltaLink": "{opaqueUrl}"
-}
-```
-
-Note: If the collection is paginated the deltaLink will only be present on the final page but MUST reflect any changes to the data returned across all pages.
-
-### 10.4 Contents of a delta link response
-Added/Updated entries MUST appear as regular JSON objects, with regular item properties.
-Returning the added/modified items in their regular representation allows the client to merge them into their existing "cache" using standard merge concepts based on the "id" field.
-
-Entries removed from the defined collection MUST be included in the response.
-Items removed from the set MUST be represented using only their "id" and an "@removed" node.
-
-### 10.5 Using a delta link
-The client requests changes by invoking the GET method on the delta link.
-The client MUST use the delta URL as is -- in other words the client MUST NOT modify the URL in any way (e.g., parsing it and adding additional query string parameters).
-In this example:
-
-```http
-GET https://{opaqueUrl} HTTP/1.1
-Accept: application/json
-
-HTTP/1.1 200 OK
-Content-Type: application/json
-
-{
-  "value":[
-    { "id": "1", "name": "Mat"},
-    { "id": "2", "name": "Marc"},
-    { "id": "3", "@removed": {} },
-    { "id": "4", "name": "Luc"}
-  ],
-  "@deltaLink": "{opaqueUrl}"
-}
-```
-
-The results of a request against the delta link may span multiple pages but MUST be ordered by the service across all pages in such a way as to ensure a deterministic result when applied in order to the response that contained the delta link.
-
-If no changes have occurred, the response is an empty collection that contains a delta link for subsequent changes if requested.
-This delta link MAY be identical to the delta link resulting in the empty collection of changes.
-
-If the delta link is no longer valid, the service MUST respond with _410 Gone_. The response SHOULD include a Location header that the client can use to retrieve a new baseline set of results.
+Currently we see no benefits in using delta queries.
 
 ## 11 JSON standardizations
 ### 11.1 JSON formatting standardization for primitive types
@@ -1052,6 +972,8 @@ This optimizes for ECMAScript, .NET, and C++ programmers, in that order.)
 
 #### 11.2.2 Consuming dates
 Services MUST accept dates from clients that use the same `DateLiteral` format (including the `DateKind`, if applicable) that they produce, and SHOULD accept dates using any `DateLiteral` format.
+
+TODO: Dates send over the API are send in local / UTC. They are always stored in UTC (legal).
 
 #### 11.2.3 Compatibility
 Services MUST use the same `DateLiteral` format (including the same `DateKind`, if applicable) for all resources of the same type, and SHOULD use the same `DateLiteral` format (and `DateKind`, if applicable) for all resources across the entire service.
@@ -1321,23 +1243,7 @@ For an API that's defined as a Stepwise Long Running Operation the service MUST 
 In other words, APIs must adopt and stick with a LRO pattern and not change patterns based on circumstance.
 
 #### 13.2.1 PUT
-Services MAY enable PUT requests for entity creation.
-
-```http
-PUT https://api.contoso.com/v1/databases/db1
-```
-
-In this scenario the _databases_ segment is processing the PUT operation.
-
-```http
-HTTP/1.1 202 Accepted
-Operation-Location: https://api.contoso.com/v1/operations/123
-```
-
-For services that need to return a 201 Created here, use the hybrid flow described below.
-
-The 202 Accepted should return no body.
-The 201 Created case should return the body of the target resource.
+PUT should not be used for entity creation.
 
 #### 13.2.2 POST
 Services MAY enable POST requests for entity creation.
