@@ -215,7 +215,7 @@ Clients requesting OPTIONAL server functionality (such as optional headers) MUST
 
 ## 7 Consistency fundamentals
 ### 7.1 URL structure
-Humans SHOULD be able to easily read and construct URLs. However these should not contain sensitive data (e.g. passwords, API keys). In case of doubt, check with our security officers.
+Humans SHOULD be able to easily read and construct URLs. However these should not contain sensitive data (e.g. passwords, API keys), which should be handled by [headers](#79-pii-parameters) or the request body. In case of doubt, check with our security officers.
 
 This facilitates discovery and eases adoption on platforms without a well-supported client library.
 
@@ -414,9 +414,9 @@ Consistent with their organization's privacy policy, clients SHOULD NOT transmit
 Consequently, a service SHOULD accept PII parameters transmitted as headers.
 
 However, there are many scenarios where the above recommendations cannot be followed due to client or software limitations.
-To address these limitations, services SHOULD also accept these PII parameters as part of the URL consistent with the rest of these guidelines.
+To address these limitations, services CAN also accept these PII parameters as part of the body. For security reasons, we do not allow it as readable string in the URL.
 
-Services that accept PII parameters -- whether in the URL or as headers -- SHOULD be compliant with privacy policy specified by their organization's engineering leadership.
+Services that accept PII parameters -- whether in the body or as headers -- SHOULD be compliant with privacy policy specified by their organization's engineering leadership.
 This will typically include recommending that clients prefer headers for transmission and implementations adhere to special precautions to ensure that logs and other service data collection are properly handled.
 
 ### 7.10 Response formats
