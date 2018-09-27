@@ -57,6 +57,7 @@ This document establishes the guidelines Digipolis REST APIs SHOULD follow so RE
 		- [7.11   HTTP Status Codes](#711-http-status-codes)
 		- [7.12   Client library optional](#712-client-library-optional)
 		- [7.13   Input validation](#713-input-validation)
+		- [7.14   Logging and audit](#714-logging-and-audit)
 	- [8    CORS](#8-cors)
 		- [8.1    Client guidance](#81-client-guidance)
 		- [8.2    Service guidance](#82-service-guidance)
@@ -596,6 +597,51 @@ An API should never trust the input from the client and input SHOULD be validatd
 - Define an appropriate request size limit and reject requests exceeding the limit with HTTP response status 413 Request Entity Too Large.
 - Consider logging input validation failures. Assume that someone who is performing hundreds of failed input validations per second is up to no good.
 - Use a secure parser for parsing the incoming messages. If you are using XML, make sure to use a parser that is not vulnerable to XXE and similar attacks.
+
+### 7.14 Logging and audit
+Services compliant with the Digipolis REST API Guidelines MUST write logging to `stdout` and `stderr` according to the [12factor][12factor-logging] guidelines. The format of the logs MUST follow the LogStash JSON standard, one entry per line without zonder `[, ]` or `,`. This is also communicated through the FAST procedure.
+
+```json
+{"@timestamp":"2018-02-22T13:23:51.625+00:00","@version":1,"message":"A creation event has been sent to the queue for sms entity with id 38","logger_name":"gent.digipolis.servicefactory.notification.sms.api.module.sms.service.impl.QueueSenderImpl","thread_name":"http-nio-8080-exec-1","level":"INFO","level_value":20000,"X-Correlation-Id":"551aca4a-1b04-45eb-b4f4-e465470ce40b"}
+{"@timestamp":"2018-02-22T13:23:51.628+00:00","@version":1,"message":"Response: [method=POST,uri=/v1/sms,query=<null>,headers={Location=[/v1/sms/38]},body=[locations=[/v1/sms/38]],statusCode=201,responseTime=15]","logger_name":"gent.digipolis.servicefactory.notification.sms.api.module.sms.rest.SmsController","thread_name":"http-nio-8080-exec-1","level":"INFO","level_value":20000,"X-Correlation-Id":"551aca4a-1b04-45eb-b4f4-e465470ce40b"}
+```
+
+A JSON object should at least have following fields:
+
+| Field            | Description
+|------------------|------------
+| @timestamp       | Time of the log event. (yyyy-MM-dd'T'HH:mm:ss.SSSZZ) 
+| @version         | Logstash format version (e.g. 1) 
+| message          | Formatted log message of the event
+| logger_name      | Name of the logger that logged the event
+| X-Correlation-Id | Correlation ID header of the request
+| level            | String name of the [level of the event][log4j-levels]
+| level_value      | Integer value of the [level of the event][log4j-levels]
+| stack_trace      | (Only if a throwable was logged) The stacktrace of the throwable. Stackframes are separated by line endings.
+
+Following items should be logged:
+
+- All requests:
+    - HTTP Method
+    - Headers (with cookies), authorization to be obfuscated
+    - Request body (sensitive fields to be obfuscated)
+    - Correlation Id
+- All responses:
+    - Duration, optionally extra metrics
+    - Headers
+    - Response body (sensitive fields to be obfuscated)
+- Async and event-driven tasks:
+    - Publishing an event on a topic (with correlation-id)
+    - Receiving an event from a topic (with correlation-id)
+    - Processing an event, success/failure (with correlation-id)
+- Scheduled tasks:
+    - Start time
+    - Progress reporting
+    - End time
+- Audit logs before/after security related events (e.g. impersonation, authentication)
+- Consider logging token validation errors to detect attacks
+
+Take care of log injection attacks by sanitising log data beforehand (e.g. [OWASP log injection][owasp-log-injection]).
 
 ## 8 CORS
 Services compliant with the Digipolis REST API Guidelines MUST support [CORS (Cross Origin Resource Sharing)][cors].
@@ -2086,3 +2132,6 @@ note right of App Server: Update status and cache new "since" token
 [websequencediagram-firehose-subscription-setup]: http://www.websequencediagrams.com/cgi-bin/cdraw?lz=bm90ZSBvdmVyIERldmVsb3BlciwgQXV0b21hdGlvbiwgQXBwIFNlcnZlcjogCiAgICAgQW4AEAUAJwkgbGlrZSBNb3ZpZU1ha2VyACAGV2FudHMgdG8gaW50ZWdyYXRlIHdpdGggcHJpbWFyeSBzZXJ2aWNlADcGRHJvcGJveAplbmQgbm90ZQoAgQwLQiBQb3J0YWwsIERCAIEJBVJlZ2lzdHIAgRkHREIgTm90aWZpYwCBLAVzACEGdXRoACsFUwBgBjogVGhlAF0eAIF_CkNsaWVudAAtBmVuZCB1c2VycycgYnJvd3NlciBvciBpbnN0YWxsZWQgYXBwCgCBIQwAgiQgAIFABQCBIS8AgQoGIDogTWFudWFsAIFzEQoKCgCDAgo8LS0-AIIqCiA6IExvZ2luIGludG8Agj8JAII1ECBVWCAKACoKLT4gKwCCWBM6AIQGBU5hbWUgZXRjLgCDFQ4AGxJDb25maXJtAIEBCEFjY2VzcyBUb2tlbgoKAIM3EyAtPiAtAINkCQBnBklEAIEMCwCBVQUAhQIMAIR3CmNvcGllcwArCACCIHAAhHMMAIMKDwCDABg6IHdlYmhvb2sgcgCCeg4AgnUSAIVQDToAhXYHZXIAgwgGAIcTBgBECVVSTCwgU2NvcGUAhzIGSUQKTgCGPQwAhhwNIACDBh4AHhEAgxEPbgCBagwAgxwNAIMaDiAAgx0MbWF5IGNvcHkALREAhVtqAIZHB0F1dGhvcml6AIY7BwCGXQctPiArAIEuDVJlcXVlc3QgYQCFOQZ0byBEQiBwcm90ZWN0ZWQgaW5mb3IAiiQGCgCDBQstPiAtAIctCVJlZGlyZWN0ADYHAGwNIGVuZHBvaW50AIoWBmEADw1yAHYGAIEQDACJVAcASwtlZAAYHgCICAgAMAcAcA4AhGoGAE0FAIEdFmJhY2sgdG8AhF8NaXRoIGNvZGUAghoaaQCBagcAgToHAD0JAII-B3MAPgsAglEHAEsFAIIzDgCBXw0Agn8GdG9rZW5zACcSAI0_BXJpZ2h0IG9mAItpDUNhY2hlIHRoYXQgdGhpcyBVc2VyIElEIHByb3ZpZGVkAINNCwCIZgoAggcJAIN7D3Nwb25zAI0_BwCECgYsIHJlZnJlc2gsIGFuZCBJRACBHAcAgQMPAIYADQCBDAcAgUUGYnkAjFkFIElEAIQkG3R1cm4AhF4MIHRvIGMAjR8FAIwRagCJVw1GbG93AIYqCQCMaQgAgmoKaGFuZ2UAj3YFAIFXBWRhdGEgLSB0eXBpY2FsIHZpYQCQDgVyYWN0aW5nAJAPBgCJQQt2aWEAjnsHCgCPNgogAIhDEACKZw0AkFMFAIkBDwCDDAUAgkYWKwBNCwCHWApjAIEyBQCHRg0AhWUHYWNoAIQeDACEfwVhbmQgInNpbmNlIgCFEQYAkSQOAIR3CgCNfwcAhHQFAIpQEACBUgsAhFAcAII8BWFuZCBuZXcAYRQAhFUTOiBVcGRhdGUgc3RhdHUAgSkGAIFDBQAxEwoKCg&s=mscgen
 [websequencediagram-user-subscription-setup]: http://www.websequencediagrams.com/cgi-bin/cdraw?lz=bm90ZSBvdmVyIERldmVsb3BlciwgQXV0b21hdGlvbiwgQXBwIFNlcnZlcjogCiAgICAgQW4AEAUAJwkgbGlrZSBNb3ZpZU1ha2VyACAGV2FudHMgdG8gaW50ZWdyYXRlIHdpdGggcHJpbWFyeSBzZXJ2aWNlADcGRHJvcGJveAplbmQgbm90ZQoAgQwLQiBQb3J0YWwsIERCAIEJBVJlZ2lzdHIAgRkHREIgTm90aWZpYwCBLAVzACEGdXRoACsFUwBgBjogVGhlAF0eAIF_CkNsaWVudAAtBmVuZCB1c2VycycgYnJvd3NlciBvciBpbnN0YWxsZWQgYXBwCgCBIQwAgiQgAIFABQCBIS8AgQoGIDoAgWwRCgphbHQAgyUIAIEHBiByABQMICAAgxsLPC0tPgCDTws6IENvbmZpZ3VyZQogIACDaAsgLT4gKwCCWBMAegZOYW1lIGV0Yy4AhAgFAIMaDQAfEgBdBXJtAIQ_BUFjY2VzcyBUb2tlAIETBgCDOxIgLT4gLQCBFgxBcHAgSUQAhHwIY3JldACBGxAtPgCFFgsgOiBFbWJlZAAkFGVsc2UgTWFudWFsAIIEJACEbQkgOiBMb2dpbiBpbnRvAIUBCQCBKRFVWACGGAUALQoAgh8mAIIZKwCBCAcAgjoNAIIsHACGLwkAgj8IAIESDgCECAYAh1ELAIdFCmNvcGllcwAuCGVuZACEeGoAhWQHQXV0aG9yaXoAhV8HAIV6By0-ICsAg2ANUmVxdWVzdCBhAIRVBnRvIERCIHByb3RlY3RlZCBpbmZvcgCJQQYKAIQaCy0-IC0AhkoJUmVkaXJlY3QANgcAbA0gZW5kcG9pbnQAiTMGYQAPDXIAdgYAgRAMAIhxBwBLC2VkABgeAIRjCAAwB0EAcQxVWAoASQgAgRwWYmFjayB0bwCFdAwAilwFY29kZQCCGRppAIFpBwCBOQcAPQkAgj0HcwA-CwCCUAcASwUAgjIOAIFeDQCCfgZ0b2tlbnMAJxIAjFsFcmlnaHQgb2YAiwUNQ2FjaGUgdGhhdCB0aGlzIFVzZXIgSUQgcHJvdmlkZWQAg0wLAIU6BwCCBAwAg3oPc3BvbnMAjFsHAIQJBiwgcmVmcmVzaCwgYW5kIElEAIEcBwCBAw8AiDENAIEMBwCBRQZieQCLdQUgSUQAhCMbdHVybgCEXQwgdG8gYwCMOwUKCgCLL2oAjXUMAIwTDwCPNQotPisAjhwQOgCORQdlcgCMVwYAg3YIZWJob29rIFVSTCwgU2NvcGUAkAEGSUQAjwoOAI5rDSAAi2UKAINFBQCLYw0AHBEAgzUOOiBuAIE2DABgCACDCB1oZQCBaQ5JRACDYwUAahIAghB4RmxvdwCJMwkAjE0IAIV0CmhhbmdlAJIcBQCEYQVkYXRhIC0gdHlwaWNhbCB2aWEAkjQFcmFjdGluZwCSNQYAjV8LdmlhAJEhBwoAkVwKIACNfhAAhAsNAJJ5BQCCWQ8AhhYFAIVQFisATQsAimEKYwCBMgUAik8NAIhvB2FjaACHKAwAiAkFYW5kICJzaW5jZSIAiBsGAJNKDgCIAQoAhB0cAIFSCwCHWhwAgjwFYW5kIG5ldwBhFACHXxM6IFVwZGF0ZSBzdGF0dQCBKQYAgUMFADETCgoK&s=mscgen
 [semver2]: https://semver.org/
+[12factor-logging]: https://12factor.net/logs
+[log4j-levels]: https://en.wikipedia.org/wiki/Log4j#Log4j_log_levels
+[owasp-log-injection]: https://www.owasp.org/index.php/Log_Injection
