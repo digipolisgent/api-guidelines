@@ -56,6 +56,7 @@ This document establishes the guidelines Digipolis REST APIs SHOULD follow so RE
 		- [7.10   Response formats](#710-response-formats)
 		- [7.11   HTTP Status Codes](#711-http-status-codes)
 		- [7.12   Client library optional](#712-client-library-optional)
+		- [7.13   Input validation](#713-input-validation)
 	- [8    CORS](#8-cors)
 		- [8.1    Client guidance](#81-client-guidance)
 		- [8.2    Service guidance](#82-service-guidance)
@@ -70,11 +71,6 @@ This document establishes the guidelines Digipolis REST APIs SHOULD follow so RE
 		- [9.8    Pagination](#98-pagination)
 		- [9.9    Compound collection operations](#99-compound-collection-operations)
 	- [10    Delta queries](#10-delta-queries)
-		- [10.1    Delta links](#101-delta-links)
-		- [10.2    Entity representation](#102-entity-representation)
-		- [10.3    Obtaining a delta link](#103-obtaining-a-delta-link)
-		- [10.4    Contents of a delta link response](#104-contents-of-a-delta-link-response)
-		- [10.5    Using a delta link](#105-using-a-delta-link)
 	- [11    JSON standardizations](#11-json-standardizations)
 		- [11.1    JSON formatting standardization for primitive types](#111-json-formatting-standardization-for-primitive-types)
 		- [11.2    Guidelines for dates and times](#112-guidelines-for-dates-and-times)
@@ -576,7 +572,16 @@ Services SHOULD be able to be accessed from simple HTTP tools such as curl witho
 Service developer portals SHOULD provide the equivalent of "Get Developer Token" to facilitate experimentation and curl support.
 
 ### 7.13 Input validation
-TODO copy
+An API should never trust the input from the client and input SHOULD be validatd. Following checks can be used for validation:
+
+- Validate input: length, range, format and data type.
+- Achieve an implicit input validation by using strong types like numbers, booleans, dates, times or fixed data ranges in API parameters.
+- Constrain string inputs with regular expressions.
+- Reject unexpected/illegal content.
+- Make use of validation/sanitation libraries or frameworks in your specific language.
+- Define an appropriate request size limit and reject requests exceeding the limit with HTTP response status 413 Request Entity Too Large.
+- Consider logging input validation failures. Assume that someone who is performing hundreds of failed input validations per second is up to no good.
+- Use a secure parser for parsing the incoming messages. If you are using XML, make sure to use a parser that is not vulnerable to XXE and similar attacks.
 
 ## 8 CORS
 Services compliant with the Digipolis REST API Guidelines MUST support [CORS (Cross Origin Resource Sharing)][cors].
