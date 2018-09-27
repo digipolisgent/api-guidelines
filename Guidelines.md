@@ -449,7 +449,7 @@ For nonsuccess conditions, developers SHOULD be able to write one piece of code 
 This allows building of simple and reliable infrastructure to handle exceptions as a separate flow from successful responses.
 
 The error response MUST be a single JSON object.
-This object MUST have a name/value pair named "error." The value MUST be a JSON object.
+This object MUST have a name/value pair named "error." The value MUST be a JSON object. Error values should be generic and avoid revealing unnecessary technical details like stack traces, technology versions, ...).
 
 This object MUST contain name/value pairs with the names "code" and "message," and it MAY contain name/value pairs with the names "target," "details" and "innererror."
 
