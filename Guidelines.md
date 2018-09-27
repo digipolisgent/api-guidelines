@@ -351,6 +351,20 @@ Content-Type                      | Content type                                
 Prefer                            | return=minimal, return=representation            | If the return=minimal preference is specified, services SHOULD return an empty body in response to a successful insert or update. If return=representation is specified, services SHOULD return the created or updated resource in the response. Services SHOULD support this header if they have scenarios where clients would sometimes benefit from responses, but sometimes the response would impose too much of a hit on bandwidth.
 If-Match, If-None-Match, If-Range | String                                           | Services that support updates to resources using optimistic concurrency control MUST support the If-Match header to do so. Services MAY also use other headers related to ETags as long as they follow the HTTP specification.
 
+#### Footnote on Content-Type
+**Validate request content types**
+- Reject requests containing unexpected, not allowed or missing content type headers with HTTP response status 406 Unacceptable or 415 Unsupported Media Type
+
+**Send safe response content types**
+
+It is common for REST services to allow multiple response types (e.g. `application/xml` or `application/json`, and the client specifies the preferred order of response types by the Accept header in the request.
+
+- Do NOT simply copy the Accept header to the Content-type header of the response.
+- Reject the request (ideally with a 406 Not Acceptable response) if the Accept header does not specifically contain one of the allowable types.
+
+Services including script code (e.g. JavaScript) in their responses must be especially careful to defend against header injection attack.
+- Ensure sending intended content type headers in your response matching your body content e.g. `application/json` and not `application/javascript`.
+
 ### 7.6 Standard response headers
 Services SHOULD return the following response headers, except where noted in the "required" column.
 
