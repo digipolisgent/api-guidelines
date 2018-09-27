@@ -21,9 +21,9 @@ This document establishes the guidelines Digipolis REST APIs SHOULD follow so RE
 ## 2 Table of contents
 <!-- TOC depthFrom:1 depthTo:3 withLinks:1 updateOnSave:1 orderedList:0 -->
 
-- [Digipolis REST API Guidelines 2.3](#microsoft-rest-api-guidelines-23)
-	- [Digipolis REST API Guidelines Working Group](#microsoft-rest-api-guidelines-working-group)
-- [Digipolis REST API Guidelines](#microsoft-rest-api-guidelines)
+- [Digipolis REST API Guidelines 2.3](#digipolis-rest-api-guidelines)
+	- [Digipolis REST API Guidelines Working Group](#digipolis-rest-api-guidelines-working-group)
+- [Digipolis REST API Guidelines](#digipolis-rest-api-guidelines)
 	- [1 Abstract](#1-abstract)
 	- [2 Table of contents](#2-table-of-contents)
 	- [3 Introduction](#3-introduction)
