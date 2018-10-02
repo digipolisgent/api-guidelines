@@ -576,7 +576,7 @@ Example of "details":
 In this example there were multiple problems with the request, with each individual error listed in "details."
 
 ### 7.11 HTTP Status Codes
-Standard HTTP Status Codes SHOULD be used; see the HTTP Status Code definitions for more information.
+Standard HTTP Status Codes MUST be used; see the [HTTP Status Code definitions](StatusCodes.md) for more information.
 
 ### 7.12 Client library optional
 Developers MUST be able to develop on a wide variety of platforms and languages, such as Windows, MacOS, Linux, C#, Python, Node.js, and Ruby.
