@@ -2,10 +2,10 @@
 ## Complete list of Status Codes
 A full list of HTTP Status Codes with explanation and related RFC specs can be found on [Wikipedia](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes).
 
-## Common used codes within Digipolis
-This is a list of common used status codes that should be handled correctly by clients consuming services approved by the Digipolis REST API Guidelines Working Group.
+## Commonly used codes within Digipolis
+This is a list of commonly used status codes that should be handled correctly by clients consuming services approved by the Digipolis REST API Guidelines Working Group.
 
-Each API method should preferably document the status codes that can be returned in the Swagger documentation.
+Each API method SHOULD preferably document the status codes that can be returned in the Swagger documentation.
 
 ### 2xx (Successful)
 The request was successfully received, understood, and accepted.
@@ -20,10 +20,12 @@ The request was successfully received, understood, and accepted.
 ### 3xx (Redirection)
 Further action needs to be taken in order to complete the request.
 
-| Code | Status            | When to use
-|------|-------------------|--------------
-| 301  | Moved Permanently | This and all future requests should be directed to the given URI.
+| Code | Status             | When to use
+|------|--------------------|--------------
+| 301  | Moved Permanently  | Should no longer be used, see 308 which does not allow changing HTTP method.
+| 302  | Found              | Should no longer be used, see 307 which does not allow changing HTTP method.
 | 307  | Temporary Redirect | In this case, the request should be repeated with another URI; however, future requests should still use the original URI.
+| 308  | Permanent Redirect | The request and all future requests should be repeated using another URI.
 
 ### 4xx (Client Error)
 The request contains bad syntax or cannot be fulfilled. This range should be used for user/client errors.
