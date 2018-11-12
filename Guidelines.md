@@ -100,7 +100,7 @@ This document establishes the guidelines Digipolis REST APIs SHOULD follow so RE
 		- [15.2    Feature allow list](#152-feature-allow-list)
 	- [16     Appendix](#16-appendix)
 		- [16.1    Sequence diagram notes](#161-sequence-diagram-notes)
-	
+
 
 <!-- /TOC -->
 
@@ -154,7 +154,7 @@ When a service adds a new API, that API SHOULD be consistent with the other APIs
 So if a service was written against version 1.0 of the guidelines, new APIs added incrementally to the service SHOULD also follow version 1.0. The service can then upgrade to align with the latest version of the guidelines at the service's next major release.
 
 ### 4.3 Requirements language
-The keywords "MUST," "MUST NOT," "REQUIRED," "SHALL," "SHALL NOT," "SHOULD," "SHOULD NOT," "RECOMMENDED," "MAY," and "OPTIONAL" in this document are to be interpreted as described in [RFC 2119](https://www.ietf.org/rfc/rfc2119.txt). 
+The keywords "MUST," "MUST NOT," "REQUIRED," "SHALL," "SHALL NOT," "SHOULD," "SHOULD NOT," "RECOMMENDED," "MAY," and "OPTIONAL" in this document are to be interpreted as described in [RFC 2119](https://www.ietf.org/rfc/rfc2119.txt).
 
 ### 4.4 License
 
@@ -197,7 +197,7 @@ To ensure the best possible experience for clients talking to a REST service, cl
 
 ### 6.1 Ignore rule
 For loosely coupled clients where the exact shape of the data is not known before the call, if the server returns something the client wasn't expecting, the client MUST safely ignore it.
-  
+
 Some services MAY add fields to responses without changing versions numbers.
 Services that do so MUST make this clear in their documentation and clients MUST ignore unknown fields.
 
@@ -214,7 +214,9 @@ Clients MAY rely on ordering behavior explicitly identified by the service.
 Clients requesting OPTIONAL server functionality (such as optional headers) MUST be resilient to the server ignoring that particular functionality.
 
 ## 7 Consistency fundamentals
-### 7.1 URL structure
+### 7.1 URL template
+#### 7.1.1 URL construction
+
 Humans SHOULD be able to easily read and construct URLs. However these should not contain sensitive data (e.g. passwords, API keys), which should be handled by [headers](#79-pii-parameters) or the request body. In case of doubt, check with our security officers.
 
 This facilitates discovery and eases adoption on platforms without a well-supported client library.
@@ -239,6 +241,81 @@ For example, the following is acceptable:
 https://api.contoso.com/v1/items?url=https://resources.contoso.com/shoes/fancy
 ```
 
+#### 7.1.2 Hostname
+
+Make no assumption about the hostname. Assume that each API will have a different hostname. In particular do not assume a specific IP address. Services can be dynamically deployed or moved. DNS was invented to deal with that.
+
+Hostname samples:
+
+```
+services.gentgrp.gent.be
+api.gent.be
+```
+
+Digipolis will always provide the Hostname.
+
+#### 7.1.3 Service namespace
+
+In any URI, the first noun (which may be singular or plural, depending on the situation) should be considered a “Service namespace”. Service namespaces should reflect the customer's perspective on the (business) service boundary.
+
+Do not use acronyms. Use small caps and underscore _ for <space> (governs all of the url and messages).
+
+The service namespace will be provided by Digipolis.
+
+URL Template:
+```
+/{namespace}/
+```
+
+URL Sample:
+```
+/user_management/
+```
+
+Digipolis will always decide the service namespace.
+
+#### 7.1.4 Version
+
+The URI should include /vN with the major version (N) as a prefix. No major.minor syntax. URL-based versioning is utilized for it's simplicity of use for API consumers, versus the more complex header-based approach.
+
+Version is a single number and only to be incremented on ‘backward’ compatibility breaking. Adding fields or deprecating fileds are NOT breaking changes. API Clients need to be able to ignore additional elements. API Providers need to be able to use meaningful defaults for new fields not expected by existing clients.
+
+Please stick to the following rule:
+
+> In general do NOT increment the version of your API. Until you must. And it is really rare that you must. Only increment on breaking changes. Extending the API is not a breaking change.
+
+URL template:
+```
+/{namespace}/v{version}
+```
+
+URL sample:
+```
+/user_management/v1
+```
+
+#### 7.1.5 Resource reference
+
+The URI references for resources should consistently use the same path components to refer to resources. Sub-namespace or sub-folders should be avoided, to maintain path consistency. This allows consumer developers to have a predictable experience in case they are building URIs in code.
+
+URL template:
+```
+/{namespace}/v{version}/{resource}/{resource-id}/{sub-resource}/{sub-resource-id}
+```
+
+URL sample:
+```
+/user_management/v1/users/001
+```
+#### 7.1.6 Baseurl
+
+The term baseurl is often used to indicate an absolute URL. The baseurl is a replacement for the host, namespace and version.
+
+URL template:
+```
+baseurl = {scheme}://{host}/{namespace}/v{version}
+```
+
 ### 7.2 URL length
 The HTTP 1.1 message format, defined in RFC 7230, in section [3.1.1][rfc-7230-3-1-1], defines no length limit on the Request Line, which includes the target URL.
 From the RFC:
@@ -252,7 +329,7 @@ Here are some sources for determining what target clients support:
 
  * [http://stackoverflow.com/a/417184](http://stackoverflow.com/a/417184)
  * [https://blogs.msdn.microsoft.com/ieinternals/2014/08/13/url-length-limits/](https://blogs.msdn.microsoft.com/ieinternals/2014/08/13/url-length-limits/)
- 
+
 Also note that some technology stacks have hard and adjustable url limits, so keep this in mind as you design your services.
 
 ### 7.3 Canonical identifier
@@ -342,7 +419,7 @@ Many HTTP headers are defined in [RFC7231][rfc-7231], however a complete list of
 Header                            | Type                                  | Description
 --------------------------------- | ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Authorization                     | String                                           | Authorization header for the request
-Date                              | Date                                             | Timestamp of the request, based on the client's clock, in [RFC 5322][rfc-5322-3-3] date and time format.  The server SHOULD NOT make any assumptions about the accuracy of the client's clock.  This header MAY be included in the request, but MUST be in this format when supplied. UTC MUST be used as the time zone reference for this header when it is provided.  For example: `2016-12-24T18:41:30Z`. 
+Date                              | Date                                             | Timestamp of the request, based on the client's clock, in [RFC 5322][rfc-5322-3-3] date and time format.  The server SHOULD NOT make any assumptions about the accuracy of the client's clock.  This header MAY be included in the request, but MUST be in this format when supplied. UTC MUST be used as the time zone reference for this header when it is provided.  For example: `2016-12-24T18:41:30Z`.
 Accept                            | Content type                                     | The requested content type for the response such as: <ul><li>application/xml</li><li>text/xml</li><li>application/json</li><li>text/javascript (for JSONP)</li></ul>Per the HTTP guidelines, this is just a hint and responses MAY have a different content type, such as a blob fetch where a successful response will just be the blob stream as the payload.
 Accept-Encoding                   | Gzip, deflate                                    | REST endpoints SHOULD support GZIP and DEFLATE encoding, when applicable. For very large resources, services MAY ignore and return uncompressed data.
 Accept-Language                   | "en", "es", etc.                                 | Specifies the preferred language for the response. Services are not required to support this, but if a service supports localization it MUST do so through the Accept-Language header.
@@ -370,7 +447,7 @@ Services SHOULD return the following response headers, except where noted in the
 
 Response Header    | Required                                      | Description
 ------------------ | --------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Date               | All responses                                 | Timestamp the response was processed, based on the server's clock, in [RFC 5322][rfc-5322-3-3] date and time format.  This header MUST be included in the response. UTC MUST be used as the time zone reference for this header.  For example: `2016-12-24T18:41:30Z`. 
+Date               | All responses                                 | Timestamp the response was processed, based on the server's clock, in [RFC 5322][rfc-5322-3-3] date and time format.  This header MUST be included in the response. UTC MUST be used as the time zone reference for this header.  For example: `2016-12-24T18:41:30Z`.
 Content-Type       | All responses                                 | The content type
 Content-Encoding   | All responses                                 | GZIP or DEFLATE, as appropriate
 Preference-Applied | When specified in request                     | Whether a preference indicated in the Prefer request header was applied
@@ -1007,7 +1084,7 @@ The Web has coalesced around the [ECMAScript subset of ISO 8601 date formats (IS
 For those cases, this document defines a JSON serialization format that can be used to unambiguously represent dates in different formats.
 Other serialization formats (such as XML) could be derived from this format.
 
-#### 11.3.1 The `DateLiteral` format 
+#### 11.3.1 The `DateLiteral` format
 Dates represented in JSON are serialized using the following grammar.
 Informally, a `DateValue` is either an ISO 8601-formatted string or a JSON object containing two properties named `kind` and `value` that together define a point in time.
 The following is not a context-free grammar; in particular, the interpretation of `DateValue` depends on the value of `DateKind`, but this minimizes the number of productions required to describe the format.
