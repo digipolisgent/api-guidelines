@@ -214,10 +214,10 @@ Clients MAY rely on ordering behavior explicitly identified by the service.
 Clients requesting OPTIONAL server functionality (such as optional headers) MUST be resilient to the server ignoring that particular functionality.
 
 ## 7 Consistency fundamentals
-### 7.1 URL template
+### 7.1 URL structure
 #### 7.1.1 URL construction
 
-Humans SHOULD be able to easily read and construct URLs. However these should not contain sensitive data (e.g. passwords, API keys), which should be handled by [headers](#79-pii-parameters) or the request body. In case of doubt, check with our security officers.
+Humans SHOULD be able to easily read and construct URLs. However these SHOULD not contain sensitive data (e.g. passwords, API keys), which SHOULD be handled by [headers](#79-pii-parameters) or the request body. In case of doubt, check with our security officers.
 
 This facilitates discovery and eases adoption on platforms without a well-supported client library.
 
@@ -241,26 +241,11 @@ For example, the following is acceptable:
 https://api.contoso.com/v1/items?url=https://resources.contoso.com/shoes/fancy
 ```
 
-#### 7.1.2 Hostname
+#### 7.1.2 Service namespace
 
-Make no assumption about the hostname. Assume that each API will have a different hostname. In particular do not assume a specific IP address. Services can be dynamically deployed or moved. DNS was invented to deal with that.
-
-Hostname samples:
-
-```
-services.gentgrp.gent.be
-api.gent.be
-```
-
-Digipolis will always provide the Hostname.
-
-#### 7.1.3 Service namespace
-
-In any URI, the first noun (which may be singular or plural, depending on the situation) should be considered a “Service namespace”. Service namespaces should reflect the customer's perspective on the (business) service boundary.
+In any URI, the first noun (which may be singular or plural, depending on the situation) SHOULD be considered a “Service namespace”. Service namespaces SHOULD reflect the customer's perspective on the (business) service boundary.
 
 Do not use acronyms. Use small caps and underscore _ for <space> (governs all of the url and messages).
-
-The service namespace will be provided by Digipolis.
 
 URL Template:
 ```
@@ -272,17 +257,17 @@ URL Sample:
 /user_management/
 ```
 
-Digipolis will always decide the service namespace.
+#### 7.1.3 Version
 
-#### 7.1.4 Version
+The URI SHOULD include /vN with the major version (N) as a prefix. No major.minor syntax. URL-based versioning is utilized for it's simplicity of use for API consumers, versus the more complex header-based approach.
 
-The URI should include /vN with the major version (N) as a prefix. No major.minor syntax. URL-based versioning is utilized for it's simplicity of use for API consumers, versus the more complex header-based approach.
+See Chapter 12 for more detailed guidelines.
 
 Version is a single number and only to be incremented on ‘backward’ compatibility breaking. Adding fields or deprecating fileds are NOT breaking changes. API Clients need to be able to ignore additional elements. API Providers need to be able to use meaningful defaults for new fields not expected by existing clients.
 
 Please stick to the following rule:
 
-> In general do NOT increment the version of your API. Until you must. And it is really rare that you must. Only increment on breaking changes. Extending the API is not a breaking change.
+> In general do NOT increment the version of your API. Until you MUST. And it is really rare that you MUST. Only increment on breaking changes. Extending the API is not a breaking change.
 
 URL template:
 ```
@@ -294,9 +279,9 @@ URL sample:
 /user_management/v1
 ```
 
-#### 7.1.5 Resource reference
+#### 7.1.4 Resource reference
 
-The URI references for resources should consistently use the same path components to refer to resources. Sub-namespace or sub-folders should be avoided, to maintain path consistency. This allows consumer developers to have a predictable experience in case they are building URIs in code.
+The URI references for resources SHOULD consistently use the same path components to refer to resources. Sub-namespace or sub-folders SHOULD be avoided, to maintain path consistency. This allows consumer developers to have a predictable experience in case they are building URIs in code.
 
 URL template:
 ```
@@ -306,14 +291,6 @@ URL template:
 URL sample:
 ```
 /user_management/v1/users/001
-```
-#### 7.1.6 Baseurl
-
-The term baseurl is often used to indicate an absolute URL. The baseurl is a replacement for the host, namespace and version.
-
-URL template:
-```
-baseurl = {scheme}://{host}/{namespace}/v{version}
 ```
 
 ### 7.2 URL length
