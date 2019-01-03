@@ -100,6 +100,9 @@ This document establishes the guidelines Digipolis REST APIs SHOULD follow so RE
 		- [15.2    Feature allow list](#152-feature-allow-list)
 	- [16     Appendix](#16-appendix)
 		- [16.1    Sequence diagram notes](#161-sequence-diagram-notes)
+	- [17     Service Factory](#17-servicefactory)
+		- [17.1    URL Construction](#171-url-construction)
+		- [17.2    Healthchecks](#172-healthchecks)
 
 
 <!-- /TOC -->
@@ -214,9 +217,9 @@ Clients MAY rely on ordering behavior explicitly identified by the service.
 Clients requesting OPTIONAL server functionality (such as optional headers) MUST be resilient to the server ignoring that particular functionality.
 
 ## 7 Consistency fundamentals
-### 7.1 URL structure
-#### 7.1.1 URL construction
+Be sure to follow the specific consistency rules if building a service for the Digipolis Service Factory.
 
+### 7.1 URL structure
 Humans SHOULD be able to easily read and construct URLs. However these SHOULD not contain sensitive data (e.g. passwords, API keys), which SHOULD be handled by [headers](#79-pii-parameters) or the request body. In case of doubt, check with our security officers.
 
 This facilitates discovery and eases adoption on platforms without a well-supported client library.
@@ -239,58 +242,6 @@ For example, the following is acceptable:
 
 ```
 https://api.contoso.com/v1/items?url=https://resources.contoso.com/shoes/fancy
-```
-
-#### 7.1.2 Service namespace
-
-In any URI, the first noun (which may be singular or plural, depending on the situation) SHOULD be considered a “Service namespace”. Service namespaces SHOULD reflect the customer's perspective on the (business) service boundary.
-
-Do not use acronyms. Use small caps and underscore _ for <space> (governs all of the url and messages).
-
-URL Template:
-```
-/{namespace}/
-```
-
-URL Sample:
-```
-/user_management/
-```
-
-#### 7.1.3 Version
-
-The URI SHOULD include /vN with the major version (N) as a prefix. No major.minor syntax. URL-based versioning is utilized for it's simplicity of use for API consumers, versus the more complex header-based approach.
-
-See Chapter 12 for more detailed guidelines.
-
-Version is a single number and only to be incremented on ‘backward’ compatibility breaking. Adding fields or deprecating fileds are NOT breaking changes. API Clients need to be able to ignore additional elements. API Providers need to be able to use meaningful defaults for new fields not expected by existing clients.
-
-Please stick to the following rule:
-
-> In general do NOT increment the version of your API. Until you MUST. And it is really rare that you MUST. Only increment on breaking changes. Extending the API is not a breaking change.
-
-URL template:
-```
-/{namespace}/v{version}
-```
-
-URL sample:
-```
-/user_management/v1
-```
-
-#### 7.1.4 Resource reference
-
-The URI references for resources SHOULD consistently use the same path components to refer to resources. Sub-namespace or sub-folders SHOULD be avoided, to maintain path consistency. This allows consumer developers to have a predictable experience in case they are building URIs in code.
-
-URL template:
-```
-/{namespace}/v{version}/{resource}/{resource-id}/{sub-resource}/{sub-resource-id}
-```
-
-URL sample:
-```
-/user_management/v1/users/001
 ```
 
 ### 7.2 URL length
@@ -2107,6 +2058,79 @@ note right of App Server: Update status and cache new "since" token
 
 === End Text ===
 ```
+
+## 17 Service Factory
+This section contains guidelines that are specific for implementations in the Service Factory. Services that SHOULD work in the Digipolis Service Factory platform MUST follow these guidelines.
+
+### 17.1 URL Construction
+#### 7.1.2 Business domain and service namespace
+
+In any URI, the first two nouns (which may be singular or plural, depending on the situation) SHOULD be considered a "Business domain" and a “Service namespace”. Business Domains and Service namespaces SHOULD reflect the customer's perspective on the (business) service boundary.
+
+The Service Facotry will provide a business domain that you MUST put before a service namespace that you CAN choose.
+
+Do not use acronyms. Use small caps and underscore _ for <space> (governs all of the url and messages).
+
+URL Template:
+```
+/{businessdomain}/{namespace}/
+```
+
+URL Sample:
+```
+/finance/budgetcalculator/
+```
+
+#### 7.1.3 Version
+
+The URI SHOULD include /vN with the major version (N) as a prefix. No major.minor syntax. URL-based versioning is utilized for it's simplicity of use for API consumers, versus the more complex header-based approach.
+
+See Chapter 12 for more detailed guidelines.
+
+Version is a single number and only to be incremented on ‘backward’ compatibility breaking. Adding fields or deprecating fileds are NOT breaking changes. API Clients need to be able to ignore additional elements. API Providers need to be able to use meaningful defaults for new fields not expected by existing clients.
+
+Please stick to the following rule:
+
+> In general do NOT increment the version of your API. Until you MUST. And it is really rare that you MUST. Only increment on breaking changes. Extending the API is not a breaking change.
+
+URL template:
+```
+/{namespace}/v{version}
+```
+
+URL sample:
+```
+/finance/budgetcalculator/v1
+```
+
+#### 7.1.4 Resource reference
+
+The URI references for resources SHOULD consistently use the same path components to refer to resources. Sub-namespace or sub-folders SHOULD be avoided, to maintain path consistency. This allows consumer developers to have a predictable experience in case they are building URIs in code.
+
+URL template:
+```
+/{namespace}/v{version}/{resource}/{resource-id}/{sub-resource}/{sub-resource-id}
+```
+
+URL sample:
+```
+/finance/budgetcalculator/v1/budgetround/001
+```
+
+### 17.2 Healthchecks
+All our services MUST use a generic way for monitoring and checking their health. These are called the healthchecks.
+
+The healthchecks are based on the method called ["Hootsuite Health Checks"][hootsuite-healthchecks].
+
+We provide a generic healthcheck service that can be used in new implementations for all major coding languages.
+
+[Java][java-healthchecks]
+
+[NetCore][net-nuget-healthchecks]
+
+[net-nuget-healthchecks]: https://github.com/digipolisgent/net_nuget_microservices-health
+[java-healthchecks]: https://github.com/digipolisgent/java_module_healthcheck
+[hootsuite-healthchecks]: https://hootsuite.github.io/health-checks-api/
 [fielding]: https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm
 [IANA-headers]: http://www.iana.org/assignments/message-headers/message-headers.xhtml
 [rfc7231-7-1-1-1]: https://tools.ietf.org/html/rfc7231#section-7.1.1.1
