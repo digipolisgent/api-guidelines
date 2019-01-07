@@ -2069,6 +2069,8 @@ In any URL, the first two nouns (which may be singular or plural, depending on t
 
 The Service Factory will provide a business domain that you MUST put before a service namespace that you CAN choose. Contact us [by mail](mailto:servicefactory@digipolis.gent) to receive the latest overview.
 
+Business Domain Samples: supporting, crm, location, financial, ... 
+
 Do not use acronyms. Use small caps and underscore _ for space (governs all of the url and messages).
 
 URL Template:
