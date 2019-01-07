@@ -2065,9 +2065,9 @@ This section contains guidelines that are specific for implementations in the Se
 ### 17.1 URL Construction
 #### 7.1.2 Business domain and service namespace
 
-In any URI, the first two nouns (which may be singular or plural, depending on the situation) SHOULD be considered a "Business domain" and a “Service namespace”. Business Domains and Service namespaces SHOULD reflect the customer's perspective on the (business) service boundary.
+In any URL, the first two nouns (which may be singular or plural, depending on the situation) SHOULD be considered a "Business domain" and a “Service namespace”. Business Domains and Service namespaces SHOULD reflect the customer's perspective on the (business) service boundary.
 
-The Service Facotry will provide a business domain that you MUST put before a service namespace that you CAN choose.
+The Service Factory will provide a business domain that you MUST put before a service namespace that you CAN choose. Contact us [by mail](mailto:servicefactory@digipolis.gent) to receive the latest overview.
 
 Do not use acronyms. Use small caps and underscore _ for <space> (governs all of the url and messages).
 
@@ -2083,7 +2083,7 @@ URL Sample:
 
 #### 7.1.3 Version
 
-The URI SHOULD include /vN with the major version (N) as a prefix. No major.minor syntax. URL-based versioning is utilized for it's simplicity of use for API consumers, versus the more complex header-based approach.
+The URL SHOULD include /vN with the major version (N) as a prefix. No major.minor syntax. URL-based versioning is utilized for it's simplicity of use for API consumers, versus the more complex header-based approach.
 
 See Chapter 12 for more detailed guidelines.
 
@@ -2105,7 +2105,7 @@ URL sample:
 
 #### 7.1.4 Resource reference
 
-The URI references for resources SHOULD consistently use the same path components to refer to resources. Sub-namespace or sub-folders SHOULD be avoided, to maintain path consistency. This allows consumer developers to have a predictable experience in case they are building URIs in code.
+The URL references for resources SHOULD consistently use the same path components to refer to resources. Sub-namespace or sub-folders SHOULD be avoided, to maintain path consistency. This allows consumer developers to have a predictable experience in case they are building URL in code.
 
 URL template:
 ```
