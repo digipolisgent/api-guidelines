@@ -2069,7 +2069,7 @@ In any URL, the first two nouns (which may be singular or plural, depending on t
 
 The Service Factory will provide a business domain that you MUST put before a service namespace that you CAN choose. Contact us [by mail](mailto:servicefactory@digipolis.gent) to receive the latest overview.
 
-Business Domain Samples: supporting, crm, location, financial, ... 
+Business Domain Samples: supporting, crm, location, financial, ...
 
 Do not use acronyms. Use small caps and underscore _ for space (governs all of the url and messages).
 
@@ -2119,7 +2119,12 @@ URL sample:
 /finance/budgetcalculator/v1/budgetround/001
 ```
 
+#### 7.1.5 Custom Headers
+
+Some of the microservices the Service Factory provides MUST use custom headers. The desciption and syntax off these custom headers WILL be provided in the OpenAPI Specification of the respective microservice.
+
 ### 17.2 Healthchecks
+
 All our services MUST use a generic way for monitoring and checking their health. These are called the healthchecks.
 
 The healthchecks are based on the method called ["Hootsuite Health Checks"][hootsuite-healthchecks].
