@@ -2121,7 +2121,7 @@ URL sample:
 
 #### 7.1.5 Custom Headers
 
-Some of the microservices the Service Factory provides MUST use custom headers. The desciption and syntax off these custom headers WILL be provided in the OpenAPI Specification of the respective microservice.
+Some of the microservices the Service Factory provides use custom headers. The desciption of these custom headers MUST be provided in the OpenAPI Specification of the respective microservice. All our custom headers MUST be in the lower camel case format.
 
 ### 17.2 Healthchecks
 
