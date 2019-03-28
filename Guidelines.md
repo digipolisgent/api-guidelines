@@ -608,8 +608,8 @@ An API should never trust the input from the client and input SHOULD be validatd
 Services compliant with the Digipolis REST API Guidelines MUST write logging to `stdout` and `stderr` according to the [12factor][12factor-logging] guidelines. The format of the logs MUST follow the LogStash JSON standard, one entry per line without `[, ]` or `,`.
 
 ```json
-{"@timestamp":"2018-02-22T13:23:51.625+00:00","@version":1,"message":"A creation event has been sent to the queue for sms entity with id 38","logger_name":"gent.digipolis.servicefactory.notification.sms.api.module.sms.service.impl.QueueSenderImpl","thread_name":"http-nio-8080-exec-1","level":"INFO","level_value":20000,"X-Correlation-Id":"551aca4a-1b04-45eb-b4f4-e465470ce40b"}
-{"@timestamp":"2018-02-22T13:23:51.628+00:00","@version":1,"message":"Response: [method=POST,uri=/v1/sms,query=<null>,headers={Location=[/v1/sms/38]},body=[locations=[/v1/sms/38]],statusCode=201,responseTime=15]","logger_name":"gent.digipolis.servicefactory.notification.sms.api.module.sms.rest.SmsController","thread_name":"http-nio-8080-exec-1","level":"INFO","level_value":20000,"X-Correlation-Id":"551aca4a-1b04-45eb-b4f4-e465470ce40b"}
+{"@timestamp":"2018-02-22T13:23:51.625+00:00","@version":1,"message":"A creation event has been sent to the queue for sms entity with id 38","logger_name":"gent.digipolis.servicefactory.notification.sms.api.module.sms.service.impl.QueueSenderImpl","thread_name":"http-nio-8080-exec-1","level":"INFO","level_value":20000,"correlationId":"551aca4a-1b04-45eb-b4f4-e465470ce40b"}
+{"@timestamp":"2018-02-22T13:23:51.628+00:00","@version":1,"message":"Response: [method=POST,uri=/v1/sms,query=<null>,headers={Location=[/v1/sms/38]},body=[locations=[/v1/sms/38]],statusCode=201,responseTime=15]","logger_name":"gent.digipolis.servicefactory.notification.sms.api.module.sms.rest.SmsController","thread_name":"http-nio-8080-exec-1","level":"INFO","level_value":20000,"correlationId":"551aca4a-1b04-45eb-b4f4-e465470ce40b"}
 ```
 
 A JSON object should at least have following fields:
@@ -620,7 +620,7 @@ A JSON object should at least have following fields:
 | @version         | Logstash format version (e.g. 1) 
 | message          | Formatted log message of the event
 | logger_name      | Name of the logger that logged the event
-| correlation_id   | Correlation ID header of the request
+| correlationId    | Correlation ID header of the request
 | level            | String name of the [level of the event][log4j-levels]
 | level_value      | Integer value of the [level of the event][log4j-levels]
 | stack_trace      | (Only if a throwable was logged) The stacktrace of the throwable. Stackframes are separated by line endings.
@@ -645,7 +645,6 @@ Following items should be logged:
     - Progress reporting
     - End time
 - Audit logs before/after security related events (e.g. impersonation, authentication)
-- Consider logging token validation errors to detect attacks
 
 Take care of log injection attacks by sanitising log data beforehand (e.g. [OWASP log injection][owasp-log-injection]).
 
