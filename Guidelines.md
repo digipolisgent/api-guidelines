@@ -2129,7 +2129,7 @@ URL sample:
 Some of the microservices the Service Factory provides use custom headers. The desciption of these custom headers MUST be provided in the OpenAPI Specification of the respective microservice. All our custom headers MUST be in the lower camel case format. Examples of used custom headers are:
 
 - `userKey`: API key to access a service, retrieved through the developer portal.
-- `tenandId`: application specific key retrieved by contacting Service Factory, used for e.g. data seggragation.
+- `tenantId`: application specific key retrieved by contacting Service Factory, used for e.g. data seggragation.
 
 ### 17.2 Healthchecks
 
@@ -2144,7 +2144,7 @@ We provide a generic healthcheck service that can be used in new implementations
 ### 17.3 OpenAPI documentation
 
 All our services MUST be documented in [OpenAPI / Swagger][openapi]. By documenting the API, we create a fixed API contract for the given version of the API. The contract MUST be validated by at least 1 member of the [API workgroup](mailto:DLAPIwerkgroep@digipolis.gent) before the service is released.
-These API contracts are later exposed on the developer portal as documentation.
+These API contracts are later exposed on the developer portal as documentation. Only the exposed methods are placed on the developer portal, this is not always all available methods on the API.
 
 The OpenAPI documentation can be written by hand or generated from the service. We provide a generic OpenAPI generator for:
 
