@@ -100,7 +100,7 @@ This document establishes the guidelines Digipolis REST APIs SHOULD follow so RE
 		- [15.2    Feature allow list](#152-feature-allow-list)
 	- [16     Appendix](#16-appendix)
 		- [16.1    Sequence diagram notes](#161-sequence-diagram-notes)
-	- [17     Service Factory](#17-servicefactory)
+	- [17     Service Factory](#17-service-factory)
 		- [17.1    URL Construction](#171-url-construction)
 		- [17.2    Healthchecks](#172-healthchecks)
 
@@ -2063,7 +2063,7 @@ note right of App Server: Update status and cache new "since" token
 This section contains guidelines that are specific for implementations in the Service Factory. Services that SHOULD work in the Digipolis Service Factory platform MUST follow these guidelines.
 
 ### 17.1 URL Construction
-#### 7.1.2 Business domain and service namespace
+#### 17.1.1 Business domain and service namespace
 
 In any URL, the first two nouns (which may be singular or plural, depending on the situation) SHOULD be considered a "Business domain" and a “Service namespace”. Business Domains and Service namespaces SHOULD reflect the customer's perspective on the (business) service boundary.
 
@@ -2083,7 +2083,7 @@ URL Sample:
 /finance/budgetcalculator/
 ```
 
-#### 7.1.3 Version
+#### 17.1.2 Version
 
 The URL SHOULD include /vN with the major version (N) as a prefix. No major.minor syntax. URL-based versioning is utilized for it's simplicity of use for API consumers, versus the more complex header-based approach.
 
@@ -2105,7 +2105,7 @@ URL sample:
 /finance/budgetcalculator/v1
 ```
 
-#### 7.1.4 Resource reference
+#### 17.1.3 Resource reference
 
 The URL references for resources SHOULD consistently use the same path components to refer to resources. Sub-namespace or sub-folders SHOULD be avoided, to maintain path consistency. This allows consumer developers to have a predictable experience in case they are building URL in code.
 
@@ -2119,21 +2119,18 @@ URL sample:
 /finance/budgetcalculator/v1/budgetround/001
 ```
 
-#### 7.1.5 Custom Headers
+#### 17.1.4 Custom Headers
 
 Some of the microservices the Service Factory provides use custom headers. The desciption of these custom headers MUST be provided in the OpenAPI Specification of the respective microservice. All our custom headers MUST be in the lower camel case format.
 
 ### 17.2 Healthchecks
 
-All our services MUST use a generic way for monitoring and checking their health. These are called the healthchecks.
-
-The healthchecks are based on the method called ["Hootsuite Health Checks"][hootsuite-healthchecks].
+All our services MUST use a generic way for monitoring and checking their health. These are called the healthchecks. The healthchecks are based on the methodology called ["Hootsuite Health Checks"][hootsuite-healthchecks].
 
 We provide a generic healthcheck service that can be used in new implementations for all major coding languages.
 
-[Java][java-healthchecks]
-
-[NetCore][net-nuget-healthchecks]
+- [Java module][java-healthchecks]
+- [.Net Core NuGet][net-nuget-healthchecks]
 
 [net-nuget-healthchecks]: https://github.com/digipolisgent/net_nuget_microservices-health
 [java-healthchecks]: https://github.com/digipolisgent/java_module_healthcheck
