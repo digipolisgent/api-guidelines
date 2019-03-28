@@ -100,7 +100,11 @@ This document establishes the guidelines Digipolis REST APIs SHOULD follow so RE
 		- [15.2    Feature allow list](#152-feature-allow-list)
 	- [16     Appendix](#16-appendix)
 		- [16.1    Sequence diagram notes](#161-sequence-diagram-notes)
-	
+	- [17     Service Factory](#17-service-factory)
+		- [17.1    URL Construction](#171-url-construction)
+		- [17.2    Healthchecks](#172-healthchecks)
+		- [17.3    OpenAPI documentation](#173-openapi-documentation)
+
 
 <!-- /TOC -->
 
@@ -154,7 +158,7 @@ When a service adds a new API, that API SHOULD be consistent with the other APIs
 So if a service was written against version 1.0 of the guidelines, new APIs added incrementally to the service SHOULD also follow version 1.0. The service can then upgrade to align with the latest version of the guidelines at the service's next major release.
 
 ### 4.3 Requirements language
-The keywords "MUST," "MUST NOT," "REQUIRED," "SHALL," "SHALL NOT," "SHOULD," "SHOULD NOT," "RECOMMENDED," "MAY," and "OPTIONAL" in this document are to be interpreted as described in [RFC 2119](https://www.ietf.org/rfc/rfc2119.txt). 
+The keywords "MUST," "MUST NOT," "REQUIRED," "SHALL," "SHALL NOT," "SHOULD," "SHOULD NOT," "RECOMMENDED," "MAY," and "OPTIONAL" in this document are to be interpreted as described in [RFC 2119](https://www.ietf.org/rfc/rfc2119.txt).
 
 ### 4.4 License
 
@@ -197,7 +201,7 @@ To ensure the best possible experience for clients talking to a REST service, cl
 
 ### 6.1 Ignore rule
 For loosely coupled clients where the exact shape of the data is not known before the call, if the server returns something the client wasn't expecting, the client MUST safely ignore it.
-  
+
 Some services MAY add fields to responses without changing versions numbers.
 Services that do so MUST make this clear in their documentation and clients MUST ignore unknown fields.
 
@@ -214,8 +218,10 @@ Clients MAY rely on ordering behavior explicitly identified by the service.
 Clients requesting OPTIONAL server functionality (such as optional headers) MUST be resilient to the server ignoring that particular functionality.
 
 ## 7 Consistency fundamentals
+Be sure to follow the specific consistency rules if building a service for the Digipolis Service Factory.
+
 ### 7.1 URL structure
-Humans SHOULD be able to easily read and construct URLs. However these should not contain sensitive data (e.g. passwords, API keys), which should be handled by [headers](#79-pii-parameters) or the request body. In case of doubt, check with our security officers.
+Humans SHOULD be able to easily read and construct URLs. However these SHOULD not contain sensitive data (e.g. passwords, API keys), which SHOULD be handled by [headers](#79-pii-parameters) or the request body. In case of doubt, check with our security officers.
 
 This facilitates discovery and eases adoption on platforms without a well-supported client library.
 
@@ -252,7 +258,7 @@ Here are some sources for determining what target clients support:
 
  * [http://stackoverflow.com/a/417184](http://stackoverflow.com/a/417184)
  * [https://blogs.msdn.microsoft.com/ieinternals/2014/08/13/url-length-limits/](https://blogs.msdn.microsoft.com/ieinternals/2014/08/13/url-length-limits/)
- 
+
 Also note that some technology stacks have hard and adjustable url limits, so keep this in mind as you design your services.
 
 ### 7.3 Canonical identifier
@@ -342,7 +348,7 @@ Many HTTP headers are defined in [RFC7231][rfc-7231], however a complete list of
 Header                            | Type                                  | Description
 --------------------------------- | ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Authorization                     | String                                           | Authorization header for the request
-Date                              | Date                                             | Timestamp of the request, based on the client's clock, in [RFC 5322][rfc-5322-3-3] date and time format.  The server SHOULD NOT make any assumptions about the accuracy of the client's clock.  This header MAY be included in the request, but MUST be in this format when supplied. UTC MUST be used as the time zone reference for this header when it is provided.  For example: `2016-12-24T18:41:30Z`. 
+Date                              | Date                                             | Timestamp of the request, based on the client's clock, in [RFC 5322][rfc-5322-3-3] date and time format.  The server SHOULD NOT make any assumptions about the accuracy of the client's clock.  This header MAY be included in the request, but MUST be in this format when supplied. UTC MUST be used as the time zone reference for this header when it is provided.  For example: `2016-12-24T18:41:30Z`.
 Accept                            | Content type                                     | The requested content type for the response such as: <ul><li>application/xml</li><li>text/xml</li><li>application/json</li><li>text/javascript (for JSONP)</li></ul>Per the HTTP guidelines, this is just a hint and responses MAY have a different content type, such as a blob fetch where a successful response will just be the blob stream as the payload.
 Accept-Encoding                   | Gzip, deflate                                    | REST endpoints SHOULD support GZIP and DEFLATE encoding, when applicable. For very large resources, services MAY ignore and return uncompressed data.
 Accept-Language                   | "en", "es", etc.                                 | Specifies the preferred language for the response. Services are not required to support this, but if a service supports localization it MUST do so through the Accept-Language header.
@@ -370,7 +376,7 @@ Services SHOULD return the following response headers, except where noted in the
 
 Response Header    | Required                                      | Description
 ------------------ | --------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Date               | All responses                                 | Timestamp the response was processed, based on the server's clock, in [RFC 5322][rfc-5322-3-3] date and time format.  This header MUST be included in the response. UTC MUST be used as the time zone reference for this header.  For example: `2016-12-24T18:41:30Z`. 
+Date               | All responses                                 | Timestamp the response was processed, based on the server's clock, in [RFC 5322][rfc-5322-3-3] date and time format.  This header MUST be included in the response. UTC MUST be used as the time zone reference for this header.  For example: `2016-12-24T18:41:30Z`.
 Content-Type       | All responses                                 | The content type
 Content-Encoding   | All responses                                 | GZIP or DEFLATE, as appropriate
 Preference-Applied | When specified in request                     | Whether a preference indicated in the Prefer request header was applied
@@ -999,7 +1005,7 @@ The Web has coalesced around the [ECMAScript subset of ISO 8601 date formats (IS
 For those cases, this document defines a JSON serialization format that can be used to unambiguously represent dates in different formats.
 Other serialization formats (such as XML) could be derived from this format.
 
-#### 11.3.1 The `DateLiteral` format 
+#### 11.3.1 The `DateLiteral` format
 Dates represented in JSON are serialized using the following grammar.
 Informally, a `DateValue` is either an ISO 8601-formatted string or a JSON object containing two properties named `kind` and `value` that together define a point in time.
 The following is not a context-free grammar; in particular, the interpretation of `DateValue` depends on the value of `DateKind`, but this minimizes the number of productions required to describe the format.
@@ -2045,6 +2051,101 @@ note right of App Server: Update status and cache new "since" token
 
 === End Text ===
 ```
+
+## 17 Service Factory
+This section contains guidelines that are specific for implementations in the Service Factory. Services that SHOULD work in the Digipolis Service Factory platform MUST follow these guidelines.
+
+### 17.1 URL Construction
+#### 17.1.1 Business domain and service namespace
+
+In any URL, the first two nouns (which may be singular or plural, depending on the situation) SHOULD be considered a "Business domain" and a “Service namespace”. Business Domains and Service namespaces SHOULD reflect the customer's perspective on the (business) service boundary.
+
+The Service Factory will provide a business domain that you MUST put before a service namespace that you CAN choose. Contact us [by mail](mailto:servicefactory@digipolis.gent) to receive the latest overview.
+
+Business Domain Samples: supporting, crm, location, financial, ...
+
+Do not use acronyms. Use small caps and underscore _ for space (governs all of the url and messages).
+
+URL Template:
+```
+/{businessdomain}/{namespace}/
+```
+
+URL Sample:
+```
+/finance/budgetcalculator/
+```
+
+#### 17.1.2 Version
+
+The URL SHOULD include /vN with the major version (N) as a prefix. No major.minor syntax. URL-based versioning is utilized for it's simplicity of use for API consumers, versus the more complex header-based approach.
+
+See Chapter 12 for more detailed guidelines.
+
+Version is a single number and only to be incremented on ‘backward’ compatibility breaking. Adding fields or deprecating fileds are NOT breaking changes. API Clients need to be able to ignore additional elements. API Providers need to be able to use meaningful defaults for new fields not expected by existing clients.
+
+Please stick to the following rule:
+
+> In general do NOT increment the version of your API. Until you MUST. And it is really rare that you MUST. Only increment on breaking changes. Extending the API is not a breaking change.
+
+URL template:
+```
+/{namespace}/v{version}
+```
+
+URL sample:
+```
+/finance/budgetcalculator/v1
+```
+
+We provide a generic solution for business domain and versioning for:
+
+- [.NET Core 2.2+][net-nuget-microservices-core]
+
+#### 17.1.3 Resource reference
+
+The URL references for resources SHOULD consistently use the same path components to refer to resources. Sub-namespace or sub-folders SHOULD be avoided, to maintain path consistency. This allows consumer developers to have a predictable experience in case they are building URL in code. Resource names are typically in plural, possibly followed by an id when accessing a single item.
+
+URL template:
+```
+/{namespace}/v{version}/{resource}/{resource-id}/{sub-resource}/{sub-resource-id}
+```
+
+URL sample:
+```
+/finance/budgetcalculator/v1/budgetrounds/001
+```
+
+#### 17.1.4 Custom Headers
+
+Some of the microservices the Service Factory provides use custom headers. The desciption of these custom headers MUST be provided in the OpenAPI Specification of the respective microservice. All our custom headers MUST be in the lower camel case format. Examples of used custom headers are:
+
+- `userKey`: API key to access a service, retrieved through the developer portal.
+- `tenantId`: application specific key retrieved by contacting Service Factory, used for e.g. data seggragation.
+
+### 17.2 Healthchecks
+
+All our services MUST use a generic way for monitoring and checking their health. These are called the healthchecks. The healthchecks are based on the methodology called ["Hootsuite Health Checks"][hootsuite-healthchecks].
+
+We provide a generic healthcheck service that can be used in new implementations for all major coding languages:
+
+- [Java][java-healthchecks]
+- [.NET 4.6.2+][net-nuget-healthchecks]
+- [.NET Core 2.1+][net-nuget-healthchecks]
+
+### 17.3 OpenAPI documentation
+
+All our services MUST be documented in [OpenAPI / Swagger][openapi]. By documenting the API, we create a fixed API contract for the given version of the API. The contract MUST be validated by at least 1 member of the [API workgroup](mailto:DLAPIwerkgroep@digipolis.gent) before the service is released.
+These API contracts are later exposed on the developer portal as documentation. Only the exposed methods are placed on the developer portal, this is not always all available methods on the API.
+
+The OpenAPI documentation can be written by hand or generated from the service. We provide a generic OpenAPI generator for:
+
+- [.NET Core 2.2+][net-nuget-microservices-core]
+
+[net-nuget-healthchecks]: https://github.com/digipolisgent/net_nuget_microservices-health
+[net-nuget-microservices-core]: https://github.com/digipolisgent/net_nuget_microservices-core
+[java-healthchecks]: https://github.com/digipolisgent/java_module_healthcheck
+[hootsuite-healthchecks]: https://hootsuite.github.io/health-checks-api/
 [fielding]: https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm
 [IANA-headers]: http://www.iana.org/assignments/message-headers/message-headers.xhtml
 [rfc7231-7-1-1-1]: https://tools.ietf.org/html/rfc7231#section-7.1.1.1
@@ -2078,5 +2179,6 @@ note right of App Server: Update status and cache new "since" token
 [websequencediagram-firehose-subscription-setup]: http://www.websequencediagrams.com/cgi-bin/cdraw?lz=bm90ZSBvdmVyIERldmVsb3BlciwgQXV0b21hdGlvbiwgQXBwIFNlcnZlcjogCiAgICAgQW4AEAUAJwkgbGlrZSBNb3ZpZU1ha2VyACAGV2FudHMgdG8gaW50ZWdyYXRlIHdpdGggcHJpbWFyeSBzZXJ2aWNlADcGRHJvcGJveAplbmQgbm90ZQoAgQwLQiBQb3J0YWwsIERCAIEJBVJlZ2lzdHIAgRkHREIgTm90aWZpYwCBLAVzACEGdXRoACsFUwBgBjogVGhlAF0eAIF_CkNsaWVudAAtBmVuZCB1c2VycycgYnJvd3NlciBvciBpbnN0YWxsZWQgYXBwCgCBIQwAgiQgAIFABQCBIS8AgQoGIDogTWFudWFsAIFzEQoKCgCDAgo8LS0-AIIqCiA6IExvZ2luIGludG8Agj8JAII1ECBVWCAKACoKLT4gKwCCWBM6AIQGBU5hbWUgZXRjLgCDFQ4AGxJDb25maXJtAIEBCEFjY2VzcyBUb2tlbgoKAIM3EyAtPiAtAINkCQBnBklEAIEMCwCBVQUAhQIMAIR3CmNvcGllcwArCACCIHAAhHMMAIMKDwCDABg6IHdlYmhvb2sgcgCCeg4AgnUSAIVQDToAhXYHZXIAgwgGAIcTBgBECVVSTCwgU2NvcGUAhzIGSUQKTgCGPQwAhhwNIACDBh4AHhEAgxEPbgCBagwAgxwNAIMaDiAAgx0MbWF5IGNvcHkALREAhVtqAIZHB0F1dGhvcml6AIY7BwCGXQctPiArAIEuDVJlcXVlc3QgYQCFOQZ0byBEQiBwcm90ZWN0ZWQgaW5mb3IAiiQGCgCDBQstPiAtAIctCVJlZGlyZWN0ADYHAGwNIGVuZHBvaW50AIoWBmEADw1yAHYGAIEQDACJVAcASwtlZAAYHgCICAgAMAcAcA4AhGoGAE0FAIEdFmJhY2sgdG8AhF8NaXRoIGNvZGUAghoaaQCBagcAgToHAD0JAII-B3MAPgsAglEHAEsFAIIzDgCBXw0Agn8GdG9rZW5zACcSAI0_BXJpZ2h0IG9mAItpDUNhY2hlIHRoYXQgdGhpcyBVc2VyIElEIHByb3ZpZGVkAINNCwCIZgoAggcJAIN7D3Nwb25zAI0_BwCECgYsIHJlZnJlc2gsIGFuZCBJRACBHAcAgQMPAIYADQCBDAcAgUUGYnkAjFkFIElEAIQkG3R1cm4AhF4MIHRvIGMAjR8FAIwRagCJVw1GbG93AIYqCQCMaQgAgmoKaGFuZ2UAj3YFAIFXBWRhdGEgLSB0eXBpY2FsIHZpYQCQDgVyYWN0aW5nAJAPBgCJQQt2aWEAjnsHCgCPNgogAIhDEACKZw0AkFMFAIkBDwCDDAUAgkYWKwBNCwCHWApjAIEyBQCHRg0AhWUHYWNoAIQeDACEfwVhbmQgInNpbmNlIgCFEQYAkSQOAIR3CgCNfwcAhHQFAIpQEACBUgsAhFAcAII8BWFuZCBuZXcAYRQAhFUTOiBVcGRhdGUgc3RhdHUAgSkGAIFDBQAxEwoKCg&s=mscgen
 [websequencediagram-user-subscription-setup]: http://www.websequencediagrams.com/cgi-bin/cdraw?lz=bm90ZSBvdmVyIERldmVsb3BlciwgQXV0b21hdGlvbiwgQXBwIFNlcnZlcjogCiAgICAgQW4AEAUAJwkgbGlrZSBNb3ZpZU1ha2VyACAGV2FudHMgdG8gaW50ZWdyYXRlIHdpdGggcHJpbWFyeSBzZXJ2aWNlADcGRHJvcGJveAplbmQgbm90ZQoAgQwLQiBQb3J0YWwsIERCAIEJBVJlZ2lzdHIAgRkHREIgTm90aWZpYwCBLAVzACEGdXRoACsFUwBgBjogVGhlAF0eAIF_CkNsaWVudAAtBmVuZCB1c2VycycgYnJvd3NlciBvciBpbnN0YWxsZWQgYXBwCgCBIQwAgiQgAIFABQCBIS8AgQoGIDoAgWwRCgphbHQAgyUIAIEHBiByABQMICAAgxsLPC0tPgCDTws6IENvbmZpZ3VyZQogIACDaAsgLT4gKwCCWBMAegZOYW1lIGV0Yy4AhAgFAIMaDQAfEgBdBXJtAIQ_BUFjY2VzcyBUb2tlAIETBgCDOxIgLT4gLQCBFgxBcHAgSUQAhHwIY3JldACBGxAtPgCFFgsgOiBFbWJlZAAkFGVsc2UgTWFudWFsAIIEJACEbQkgOiBMb2dpbiBpbnRvAIUBCQCBKRFVWACGGAUALQoAgh8mAIIZKwCBCAcAgjoNAIIsHACGLwkAgj8IAIESDgCECAYAh1ELAIdFCmNvcGllcwAuCGVuZACEeGoAhWQHQXV0aG9yaXoAhV8HAIV6By0-ICsAg2ANUmVxdWVzdCBhAIRVBnRvIERCIHByb3RlY3RlZCBpbmZvcgCJQQYKAIQaCy0-IC0AhkoJUmVkaXJlY3QANgcAbA0gZW5kcG9pbnQAiTMGYQAPDXIAdgYAgRAMAIhxBwBLC2VkABgeAIRjCAAwB0EAcQxVWAoASQgAgRwWYmFjayB0bwCFdAwAilwFY29kZQCCGRppAIFpBwCBOQcAPQkAgj0HcwA-CwCCUAcASwUAgjIOAIFeDQCCfgZ0b2tlbnMAJxIAjFsFcmlnaHQgb2YAiwUNQ2FjaGUgdGhhdCB0aGlzIFVzZXIgSUQgcHJvdmlkZWQAg0wLAIU6BwCCBAwAg3oPc3BvbnMAjFsHAIQJBiwgcmVmcmVzaCwgYW5kIElEAIEcBwCBAw8AiDENAIEMBwCBRQZieQCLdQUgSUQAhCMbdHVybgCEXQwgdG8gYwCMOwUKCgCLL2oAjXUMAIwTDwCPNQotPisAjhwQOgCORQdlcgCMVwYAg3YIZWJob29rIFVSTCwgU2NvcGUAkAEGSUQAjwoOAI5rDSAAi2UKAINFBQCLYw0AHBEAgzUOOiBuAIE2DABgCACDCB1oZQCBaQ5JRACDYwUAahIAghB4RmxvdwCJMwkAjE0IAIV0CmhhbmdlAJIcBQCEYQVkYXRhIC0gdHlwaWNhbCB2aWEAkjQFcmFjdGluZwCSNQYAjV8LdmlhAJEhBwoAkVwKIACNfhAAhAsNAJJ5BQCCWQ8AhhYFAIVQFisATQsAimEKYwCBMgUAik8NAIhvB2FjaACHKAwAiAkFYW5kICJzaW5jZSIAiBsGAJNKDgCIAQoAhB0cAIFSCwCHWhwAgjwFYW5kIG5ldwBhFACHXxM6IFVwZGF0ZSBzdGF0dQCBKQYAgUMFADETCgoK&s=mscgen
 [semver2]: https://semver.org/
+[openapi]: https://swagger.io/specification/
 [spotify-paging]: https://developer.spotify.com/documentation/web-api/reference/object-model/#paging-object
 [hal]: http://stateless.co/hal_specification.html
