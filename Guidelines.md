@@ -2107,7 +2107,7 @@ URL sample:
 
 #### 17.1.3 Resource reference
 
-The URL references for resources SHOULD consistently use the same path components to refer to resources. Sub-namespace or sub-folders SHOULD be avoided, to maintain path consistency. This allows consumer developers to have a predictable experience in case they are building URL in code.
+The URL references for resources SHOULD consistently use the same path components to refer to resources. Sub-namespace or sub-folders SHOULD be avoided, to maintain path consistency. This allows consumer developers to have a predictable experience in case they are building URL in code. Resource names are typically in plural, possibly followed by an id when accessing a single item.
 
 URL template:
 ```
@@ -2116,12 +2116,15 @@ URL template:
 
 URL sample:
 ```
-/finance/budgetcalculator/v1/budgetround/001
+/finance/budgetcalculator/v1/budgetrounds/001
 ```
 
 #### 17.1.4 Custom Headers
 
-Some of the microservices the Service Factory provides use custom headers. The desciption of these custom headers MUST be provided in the OpenAPI Specification of the respective microservice. All our custom headers MUST be in the lower camel case format.
+Some of the microservices the Service Factory provides use custom headers. The desciption of these custom headers MUST be provided in the OpenAPI Specification of the respective microservice. All our custom headers MUST be in the lower camel case format. Examples of used custom headers are:
+
+- `userKey`: API key to access a service, retrieved through the developer portal.
+- `tenandId`: application specific key retrieved by contacting Service Factory, used for e.g. data seggragation.
 
 ### 17.2 Healthchecks
 
@@ -2131,6 +2134,7 @@ We provide a generic healthcheck service that can be used in new implementations
 
 - [Java module][java-healthchecks]
 - [.Net Core NuGet][net-nuget-healthchecks]
+
 
 [net-nuget-healthchecks]: https://github.com/digipolisgent/net_nuget_microservices-health
 [java-healthchecks]: https://github.com/digipolisgent/java_module_healthcheck
