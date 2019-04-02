@@ -2122,6 +2122,7 @@ Some of the microservices the Service Factory provides use custom headers. The d
 
 - `userKey`: API key to access a service, retrieved through the developer portal.
 - `tenantId`: application specific key retrieved by contacting Service Factory, used for e.g. data seggragation.
+- `correlationId`: unique Id that is attached to all requests and responses to trace a transaction over multiple services.
 
 ### 17.2 Healthchecks
 
