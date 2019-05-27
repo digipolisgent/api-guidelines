@@ -57,6 +57,7 @@ This document establishes the guidelines Digipolis REST APIs SHOULD follow so RE
 		- [7.11   HTTP Status Codes](#711-http-status-codes)
 		- [7.12   Client library optional](#712-client-library-optional)
 		- [7.13   Input validation](#713-input-validation)
+		- [7.14   Logging and audit](#714-logging-and-audit)
 	- [8    CORS](#8-cors)
 		- [8.1    Client guidance](#81-client-guidance)
 		- [8.2    Service guidance](#82-service-guidance)
@@ -602,6 +603,50 @@ An API should never trust the input from the client and input SHOULD be validatd
 - Define an appropriate request size limit and reject requests exceeding the limit with HTTP response status 413 Request Entity Too Large.
 - Consider logging input validation failures. Assume that someone who is performing hundreds of failed input validations per second is up to no good.
 - Use a secure parser for parsing the incoming messages. If you are using XML, make sure to use a parser that is not vulnerable to XXE and similar attacks.
+
+### 7.14 Logging and audit
+Services compliant with the Digipolis REST API Guidelines MUST write logging to `stdout` and `stderr` according to the [12factor][12factor-logging] guidelines. The format of the logs MUST follow the LogStash JSON standard, one entry per line without `[, ]` or `,`.
+
+```json
+{"@timestamp":"2018-02-22T13:23:51.625+00:00","@version":1,"message":"A creation event has been sent to the queue for sms entity with id 38","logger_name":"gent.digipolis.servicefactory.notification.sms.api.module.sms.service.impl.QueueSenderImpl","thread_name":"http-nio-8080-exec-1","level":"INFO","level_value":20000,"correlationId":"551aca4a-1b04-45eb-b4f4-e465470ce40b"}
+{"@timestamp":"2018-02-22T13:23:51.628+00:00","@version":1,"message":"Response: [method=POST,uri=/v1/sms,query=<null>,headers={Location=[/v1/sms/38]},body=[locations=[/v1/sms/38]],statusCode=201,responseTime=15]","logger_name":"gent.digipolis.servicefactory.notification.sms.api.module.sms.rest.SmsController","thread_name":"http-nio-8080-exec-1","level":"INFO","level_value":20000,"correlationId":"551aca4a-1b04-45eb-b4f4-e465470ce40b"}
+```
+
+A JSON object should at least have following fields:
+
+| Field            | Description
+|------------------|------------
+| @timestamp       | Time of the log event. (yyyy-MM-dd'T'HH:mm:ss.SSSZZ) 
+| @version         | Logstash format version (e.g. 1) 
+| message          | Formatted log message of the event
+| logger_name      | Name of the logger that logged the event
+| correlationId    | Correlation ID header of the request
+| level            | String name of the [level of the event][log4j-levels]
+| level_value      | Integer value of the [level of the event][log4j-levels]
+| stack_trace      | (Only if a throwable was logged) The stacktrace of the throwable. Stackframes are separated by line endings.
+
+Following items should be logged:
+
+- All requests:
+    - HTTP Method
+    - Headers (with cookies), authorization to be obfuscated
+    - Request body (sensitive fields to be obfuscated)
+    - Correlation Id
+- All responses:
+    - Duration, optionally extra metrics
+    - Headers
+    - Response body (sensitive fields to be obfuscated)
+- Async and event-driven tasks:
+    - Publishing an event on a topic (with correlation-id)
+    - Receiving an event from a topic (with correlation-id)
+    - Processing an event, success/failure (with correlation-id)
+- Scheduled tasks:
+    - Start time
+    - Progress reporting
+    - End time
+- Audit logs before/after security related events (e.g. impersonation, authentication)
+
+Take care of log injection attacks by sanitising log data beforehand (e.g. [OWASP log injection][owasp-log-injection]).
 
 ## 8 CORS
 Services compliant with the Digipolis REST API Guidelines MUST support [CORS (Cross Origin Resource Sharing)][cors].
@@ -2183,3 +2228,6 @@ The OpenAPI documentation can be written by hand or generated from the service. 
 [openapi]: https://swagger.io/specification/
 [spotify-paging]: https://developer.spotify.com/documentation/web-api/reference/object-model/#paging-object
 [hal]: http://stateless.co/hal_specification.html
+[12factor-logging]: https://12factor.net/logs
+[log4j-levels]: https://en.wikipedia.org/wiki/Log4j#Log4j_log_levels
+[owasp-log-injection]: https://www.owasp.org/index.php/Log_Injection
